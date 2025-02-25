@@ -13,4 +13,4 @@ const Roles = sequelize.define('Roles', {
         allowNull: false
     }
 });
-module.exports = Country;
+module.exports = Roles;

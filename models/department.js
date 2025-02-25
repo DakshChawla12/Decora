@@ -15,7 +15,7 @@ const Departments = sequelize.define('Department', {
         allowNull: false
     }
 });
-module.exports = Country_State;
+module.exports = Departments;
 
 
 

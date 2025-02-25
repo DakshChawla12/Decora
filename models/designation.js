@@ -15,7 +15,7 @@ const Designations = sequelize.define('Designation', {
         allowNull: false
     }
 });
-module.exports = Country_State;
+module.exports = Designations;
 
 
 
