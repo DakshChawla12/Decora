@@ -23,3 +23,4 @@ async function connectDB() {
 }
 
 module.exports = { sequelize, connectDB };
+
