@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const {sequelize} = require('../config/database');
 
 const Roles = sequelize.define('Roles', {
             roleid: {
@@ -13,4 +13,4 @@ const Roles = sequelize.define('Roles', {
         allowNull: false
     }
 });
-module.exports = Country;
+module.exports = Roles;

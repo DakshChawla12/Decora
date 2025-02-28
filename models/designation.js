@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const {sequelize} = require('../config/database');
 
 const Designations = sequelize.define('Designation', {
     desigid: {
@@ -15,7 +15,7 @@ const Designations = sequelize.define('Designation', {
         allowNull: false
     }
 });
-module.exports = Country_State;
+module.exports = Designations;
 
 
 
