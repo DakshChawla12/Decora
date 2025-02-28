@@ -1,21 +1,17 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const {sequelize} = require('../config/database') // Ensure this path is correct
 
-const Departments = sequelize.define('Department', {
-            deptid: {
+const Department = sequelize.define('Department', {
+    deptid: {
         type: DataTypes.INTEGER,
-        primarykey: true,
-        autoincrement: true,
-        allowNull:false
-        
-        
+        primaryKey: true, // Corrected case
+        autoIncrement: true, // Corrected case
+        allowNull: false
     },
-            dname: {
+    dname: {
         type: DataTypes.STRING,
         allowNull: false
     }
 });
-module.exports = Departments;
 
-
-
+module.exports = Department;

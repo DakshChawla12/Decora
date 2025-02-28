@@ -1,11 +1,11 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const {sequelize} = require('../config/database');
 
 const Employee = sequelize.define('Employee', {
             Empid: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoincrement: true
+        autoIncrement: true
         
     },
     FName: {

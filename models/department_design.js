@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const {sequelize} = require('../config/database');
 
-const Dept_Design = sequelize.define('Dept_Desig', {
+const Dept_Desig = sequelize.define('Dept_Desig', {
             deptid: {
         type: DataTypes.INTEGER,
         allowNull:false
@@ -13,7 +13,7 @@ const Dept_Design = sequelize.define('Dept_Desig', {
         allowNull: false
     }
 });
-module.exports = Dept_Design;
+module.exports = Dept_Desig;
 
 
 
