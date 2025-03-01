@@ -1,11 +1,11 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const {sequelize} = require('../config/database');
+const { sequelize } = require('../config/database');
 
 const States = sequelize.define('State', {
-            stateid: {
+    stateid: {
         type: DataTypes.INTEGER,
-        primaryKey: true
-        
+        primaryKey: true,
+        autoIncrement: true,
     },
     stateName: {
         type: DataTypes.STRING,
