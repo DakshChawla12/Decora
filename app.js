@@ -12,13 +12,15 @@ app.use(express.json());
 const countryRoutes = require("./routes/countryRoutes");
 const departmentRoutes = require("./routes/departmentRoutes");
 const customerRoutes = require("./routes/customerRoutes");
-const stateRoutes = require("./routes/stateRoutes")
+const stateRoutes = require("./routes/stateRoutes");
+const regionRoutes = require("./routes/regionRoutes");
 
 // *** Setting the routers *** //
 app.use("/api/country", countryRoutes);
 app.use("/api/department", departmentRoutes);
 app.use("/api/customer", customerRoutes);
 app.use("/api/state", stateRoutes);
+app.use("/api/region", regionRoutes);
 
 // *** Connect to database first and sync tables ***
 connectDB()
