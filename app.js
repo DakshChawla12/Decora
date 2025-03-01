@@ -4,17 +4,21 @@ const { connectDB } = require("./config/database");
 const syncDatabase = require("./config/syncDatabase"); // Import sync function
 
 const app = express();
+
+//middleware
 app.use(express.json());
 
 // *** Importing all the routes *** //
 const countryRoutes = require("./routes/countryRoutes");
 const departmentRoutes = require("./routes/departmentRoutes");
 const customerRoutes = require("./routes/customerRoutes");
+const stateRoutes = require("./routes/stateRoutes")
 
 // *** Setting the routers *** //
 app.use("/api/country", countryRoutes);
 app.use("/api/department", departmentRoutes);
 app.use("/api/customer", customerRoutes);
+app.use("/api/state", stateRoutes);
 
 // *** Connect to database first and sync tables ***
 connectDB()
