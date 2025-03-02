@@ -71,7 +71,7 @@ exports.deleteRole_Permission = async (req, res) => {
     });
 
     if (deleted) {
-      res.status(200).json({ success: true, message: "Role_permission deleted" });
+      res.status(204).json({ success: true, message: "Role_permission deleted" });
     } else {
       res.status(404).json({ success: false, message: "Role_permission not found" });
     }
