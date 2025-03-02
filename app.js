@@ -15,6 +15,8 @@ const customerRoutes = require("./routes/customerRoutes");
 const stateRoutes = require("./routes/stateRoutes");
 const regionRoutes = require("./routes/regionRoutes");
 const roleRoutes = require("./routes/roleRoutes");
+const employeeRoutes = require("./routes/employeeRoutes");
+const role_permissionsRoutes = require("./routes/role_permissionsRoutes");
 
 // *** Setting the routers *** //
 app.use("/api/country", countryRoutes);
@@ -23,6 +25,8 @@ app.use("/api/customer", customerRoutes);
 app.use("/api/state", stateRoutes);
 app.use("/api/region", regionRoutes);
 app.use("/api/role", roleRoutes);
+app.use("/api/employee", employeeRoutes);
+app.use("/api/role-permissions", role_permissionsRoutes);
 
 
 // *** Connect to database first and sync tables ***
