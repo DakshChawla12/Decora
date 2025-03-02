@@ -6,7 +6,7 @@ router.route('/')
 .get(findAll)
 .post(create);
 
-router.route('/:id')
+router.route('/:roleid/:permissionsid')
 .get(findOne)
 .patch(update)
 .delete(deleteRole_Permission);

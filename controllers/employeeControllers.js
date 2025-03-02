@@ -58,7 +58,7 @@ exports.deleteEmployee = async (req, res) => {
             where: { Empid: req.params.id }
         });
         if (deleted) {
-            res.status(200).json({ success: true, message: "Employee deleted" });
+            res.status(204).json({ success: true, message: "Employee deleted" });
         } else {
             res.status(404).json({ success: false, message: "Employee not found" });
         }
