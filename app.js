@@ -21,7 +21,8 @@ const permissionRoutes = require("./routes/permissionRoutes");
 const country_stateRoutes = require("./routes/country_stateRoutes");
 const region_countryRoutes = require("./routes/region_countryRoutes");
 const userRoutes = require("./routes/userRoutes");
-
+const designation_routes = require("./routes/designationRoutes");
+const department_designation_routes = require("./routes/department_designRoutes");
 
 // *** Setting the routers *** //
 app.use("/api/country", countryRoutes);
@@ -32,10 +33,12 @@ app.use("/api/region", regionRoutes);
 app.use("/api/role", roleRoutes);
 app.use("/api/employee", employeeRoutes);
 app.use("/api/role-permissions", role_permissionsRoutes);
-app.use("/api/permission",permissionRoutes);
+app.use("/api/permission", permissionRoutes);
 app.use("/api/country-state", country_stateRoutes);
 app.use("/api/region-country", region_countryRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/designation", designation_routes);
+app.use("/api/department-design", department_designation_routes);
 
 
 // *** Connect to database first and sync tables ***
