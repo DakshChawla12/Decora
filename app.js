@@ -25,10 +25,7 @@ const designationRoutes = require("./routes/designationRoutes");
 const department_designationRoutes = require("./routes/department_designRoutes");
 const productRoutes = require("./routes/productRoutes");
 const brandRoutes = require("./routes/brandRoutes");
-const designation_routes = require("./routes/designationRoutes");
-const department_designation_routes = require("./routes/department_designRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
-const productRouter = require("./routes/productRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 
 // *** Setting the routers *** //
@@ -46,15 +43,10 @@ app.use("/api/region-country", region_countryRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/designation", designationRoutes);
 app.use("/api/department-design", department_designationRoutes);
-app.use("/api/product",productRoutes);
+app.use("/api/product", productRoutes);
 app.use("/api/brand", brandRoutes);
-app.use("/api/designation", designation_routes);
-app.use("/api/department-design", department_designation_routes);
 app.use("/api/category", categoryRoutes);
-app.use("/api/product",productRouter);
-app.use("/api/review",reviewRoutes);
-
-
+app.use("/api/review", reviewRoutes);
 
 // *** Connect to database first and sync tables ***
 connectDB()
