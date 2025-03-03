@@ -81,8 +81,6 @@ Each table has five standard controllers:
 - Ensure proper request body formatting for `POST` and `PATCH` methods.
 - Verify the responses and database updates.
 
-## Contributing
-Feel free to fork this project, make enhancements, and submit a pull request. 
 
 ## License
 This project is licensed under the MIT License.
