@@ -29,6 +29,7 @@ const designation_routes = require("./routes/designationRoutes");
 const department_designation_routes = require("./routes/department_designRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const productRouter = require("./routes/productRoutes");
+const reviewRoutes = require("./routes/reviewRoutes");
 
 // *** Setting the routers *** //
 app.use("/api/country", countryRoutes);
@@ -51,6 +52,7 @@ app.use("/api/designation", designation_routes);
 app.use("/api/department-design", department_designation_routes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/product",productRouter);
+app.use("/api/review",reviewRoutes);
 
 
 
