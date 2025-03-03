@@ -23,6 +23,7 @@ const region_countryRoutes = require("./routes/region_countryRoutes");
 const userRoutes = require("./routes/userRoutes");
 const designation_routes = require("./routes/designationRoutes");
 const department_designation_routes = require("./routes/department_designRoutes");
+const productRouter = require("./routes/productRoutes");
 
 // *** Setting the routers *** //
 app.use("/api/country", countryRoutes);
@@ -39,6 +40,7 @@ app.use("/api/region-country", region_countryRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/designation", designation_routes);
 app.use("/api/department-design", department_designation_routes);
+app.use("/api/product",productRouter);
 
 
 // *** Connect to database first and sync tables ***
