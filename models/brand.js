@@ -1,15 +1,21 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const { sequelize } = require("../config/database");
+const Product = require("./product");
 
-const Region = sequelize.define("Region", {
-    regionid: {
+const Brand = sequelize.define("Brand", {
+    brandid: {
         type: DataTypes.INTEGER,
-        primaryKey: true,
         autoIncrement: true,
+        allowNull: false,
+        primaryKey: true,
     },
-    RegionName: {
+    brandName: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
     },
 });
-module.exports = Region;
+
+Product.belongsTo(Brand);
+
+module.exports = Brand;
