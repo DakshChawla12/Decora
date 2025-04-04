@@ -1,16 +1,16 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const { sequelize } = require('../config/database');
+const { DataTypes } = require("sequelize");
+const { sequelize } = require("../config/database");
 
-const Designations = sequelize.define('Designation', {
-    desigid: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false
+const Designation = sequelize.define("Designation", {
+    id: { 
+        type: DataTypes.INTEGER, 
+        primaryKey: true, 
+        autoIncrement: true 
     },
-    desigName: {
-        type: DataTypes.STRING,
-        allowNull: false
+    title: { 
+        type: DataTypes.STRING, 
+        allowNull: false 
     }
-});
-module.exports = Designations;
+}, { timestamps: false });  
+
+module.exports = Designation;

@@ -1,35 +1,21 @@
-const { Sequelize, DataTypes } = require("sequelize");
+const { DataTypes } = require("sequelize");
 const { sequelize } = require("../config/database");
+const Role = require("./roles");
 
-const Users = sequelize.define("User", {
-    userid: {
-        type: DataTypes.STRING,
-        primaryKey: true,
-    },
-    Password: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    username: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    emailid: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    phoneno: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    DOB: {
-        type: DataTypes.DATE,
-        allowNull: false,
-    },
-
-    roleid: {
+const User = sequelize.define("User", {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    name: { type: DataTypes.STRING, allowNull: false },
+    email: { type: DataTypes.STRING, unique: true, allowNull: false },
+    password: { type: DataTypes.STRING, allowNull: false },
+    roleId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-    },
+        references: { model: Role, key: "id" },
+        allowNull: false
+    }
+}, { 
+    timestamps: false,
+    tableName: "Users" 
 });
-module.exports = Users;
+
+
+module.exports = User;

@@ -1,8 +1,8 @@
-const {Sequelize , DataTypes} = require('sequelize');
-const {sequelize} = require('../config/database');
+const { Sequelize, DataTypes } = require('sequelize');
+const { sequelize } = require('../config/database');
 
 const Product = sequelize.define('Product', {
-    productID: {
+    productId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,

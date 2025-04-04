@@ -3,8 +3,15 @@ const Review = require("../models/review");
 // Create a new review
 exports.create = async (req, res) => {
     try {
-        const review = await Review.create(req.body);
-        res.status(201).json({ success: true, review });
+        const { customerId, productId, rating, review } = req.body; // Explicitly extract fields
+
+        // Validate required fields
+        if (!customerId || !productId || !rating) {
+            return res.status(400).json({ success: false, message: "Missing required fields." });
+        }
+
+        const newReview = await Review.create({ customerId, productId, rating, review });
+        res.status(201).json({ success: true, review: newReview });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
@@ -24,11 +31,10 @@ exports.findAll = async (req, res) => {
 exports.findOne = async (req, res) => {
     try {
         const review = await Review.findByPk(req.params.id);
-        if (review) {
-            res.status(200).json({ success: true, review });
-        } else {
-            res.status(404).json({ success: false, message: "Review not found!" });
+        if (!review) {
+            return res.status(404).json({ success: false, message: "Review not found!" });
         }
+        res.status(200).json({ success: true, review });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
@@ -38,14 +44,15 @@ exports.findOne = async (req, res) => {
 exports.update = async (req, res) => {
     try {
         const [updated] = await Review.update(req.body, {
-            where: { reviewid: req.params.id },
+            where: { id: req.params.id }, // Fixed incorrect field name
         });
-        if (updated) {
-            const updatedReview = await Review.findByPk(req.params.id);
-            res.status(200).json({ success: true, updatedReview });
-        } else {
-            res.status(404).json({ success: false, message: "Review not found!!!" });
+
+        if (updated === 0) {
+            return res.status(404).json({ success: false, message: "Review not found!" });
         }
+
+        const updatedReview = await Review.findByPk(req.params.id);
+        res.status(200).json({ success: true, updatedReview });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
@@ -55,13 +62,14 @@ exports.update = async (req, res) => {
 exports.deleteReview = async (req, res) => {
     try {
         const deleted = await Review.destroy({
-            where: { reviewid: req.params.id },
+            where: { id: req.params.id }, // Fixed incorrect field name
         });
-        if (deleted) {
-            res.status(204).json({ success: true, message: "Review deleted" });
-        } else {
-            res.status(404).json({ success: false, message: "Review not found" });
+
+        if (!deleted) {
+            return res.status(404).json({ success: false, message: "Review not found!" });
         }
+
+        res.status(200).json({ success: true, message: "Review deleted successfully!" });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }

@@ -1,51 +1,30 @@
-const { Sequelize, DataTypes } = require("sequelize");
+const { DataTypes } = require("sequelize");
 const { sequelize } = require("../config/database");
+const User = require("./user");
+const Designation = require("./designation");
+const Department = require("./department");
 
 const Employee = sequelize.define("Employee", {
-  Empid: {
+  id: { 
+    type: DataTypes.INTEGER, 
+    primaryKey: true, 
+    autoIncrement: true 
+  },
+  userId: {
     type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
+    references: { model: User, key: "id" },
+    allowNull: false
   },
-  FName: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  LName: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  Deptid: {
+  designationId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    references: { model: Designation, key: "id" },
+    allowNull: false
   },
-  Desigid: {
+  departmentId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  Address: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  doj: {
-    type: DataTypes.DATE,
-    allowNull: false,
-  },
-  stateid: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-  countryid: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  regionid: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  userid: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-});
+    references: { model: Department, key: "id" },
+    allowNull: false
+  }
+}, { timestamps: false });
+
 module.exports = Employee;

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { create, findAll, findOne, update, deleteRole_Permission } = require('../controllers/role_permissionsControllers');
+const {create , findAll , findOne , update , deleteRolePermission} = require('../controllers/role_permissionsControllers');
 
 router.route('/')
 .get(findAll)
@@ -9,6 +9,6 @@ router.route('/')
 router.route('/:roleid/:permissionsid')
 .get(findOne)
 .patch(update)
-.delete(deleteRole_Permission);
+.delete(deleteRolePermission);
 
 module.exports = router;
