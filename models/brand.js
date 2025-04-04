@@ -3,7 +3,7 @@ const { sequelize } = require("../config/database");
 const Product = require("./product");
 
 const Brand = sequelize.define("Brand", {
-    brandid: {
+    brandId: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         allowNull: false,
@@ -15,7 +15,5 @@ const Brand = sequelize.define("Brand", {
         unique: true,
     },
 });
-
-Product.belongsTo(Brand);
 
 module.exports = Brand;

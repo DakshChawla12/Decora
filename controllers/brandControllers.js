@@ -3,7 +3,7 @@ const Brand = require("../models/brand");
 // Create a new brand
 exports.create = async (req, res) => {
     try {
-        const brand = await Brand.create({ brandName: req.body.name });
+        const brand = await Brand.create({ brandName: req.body.brandName });
         res.status(201).json({ success: true, brand });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
@@ -37,9 +37,11 @@ exports.findOne = async (req, res) => {
 // Update a brand by ID
 exports.update = async (req, res) => {
     try {
-        const [updated] = await Brand.update(req.body, {
-            where: { brandid: req.params.id },
-        });
+        const [updated] = await Brand.update(
+            { brandName: req.body.brandName }, // Correct field name
+            { where: { brandId: req.params.id } } // Correct primary key field
+        );
+
         if (updated) {
             const updatedBrand = await Brand.findByPk(req.params.id);
             res.status(200).json({ success: true, updatedBrand });
@@ -55,10 +57,11 @@ exports.update = async (req, res) => {
 exports.deleteBrand = async (req, res) => {
     try {
         const deleted = await Brand.destroy({
-            where: { brandid: req.params.id },
+            where: { brandId: req.params.id }, // Correct primary key field
         });
+
         if (deleted) {
-            res.status(204).json({ success: true, message: "Brand deleted" });
+            res.status(200).json({ success: true, message: "Brand deleted" });
         } else {
             res.status(404).json({ success: false, message: "Brand not found" });
         }

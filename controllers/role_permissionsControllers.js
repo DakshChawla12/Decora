@@ -1,79 +1,79 @@
-const Role_Permissions = require("../models/role_permissions");
+const RolePermission = require("../models/role_permissions");
 
-// Create a new role_permission
+// Create a new role-permission
 exports.create = async (req, res) => {
   try {
-    const role_permission = await Role_Permissions.create({
-      roleid: req.body.roleid,
-      permissionsid: req.body.permissionsid
+    const rolePermission = await RolePermission.create({
+      roleId: req.body.roleId, // Ensure correct naming
+      permissionId: req.body.permissionId
     });
-    res.status(201).json({ success: true, role_permission });
+    res.status(201).json({ success: true, rolePermission });
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
   }
 };
 
-// Get all roles
+// Get all role-permission mappings
 exports.findAll = async (req, res) => {
   try {
-    const roles = await Role_Permissions.findAll();
-    res.status(200).json({ success: true, roles });
+    const rolePermissions = await RolePermission.findAll();
+    res.status(200).json({ success: true, rolePermissions });
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
   }
 };
 
-// Get a role_permission by ID
+// Get a role-permission by roleId and permissionId
 exports.findOne = async (req, res) => {
   try {
-    const { roleid, permissionsid } = req.params;
-    const role_permission = await Role_Permissions.findOne({
-      where: { roleid, permissionsid }
+    const { roleId, permissionId } = req.params;
+    const rolePermission = await RolePermission.findOne({
+      where: { roleId, permissionId }
     });
 
-    if (role_permission) {
-      res.status(200).json({ success: true, role_permission });
+    if (rolePermission) {
+      res.status(200).json({ success: true, rolePermission });
     } else {
-      res.status(404).json({ success: false, message: "Role_permission not found!" });
+      res.status(404).json({ success: false, message: "Role-permission not found!" });
     }
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
   }
 };
 
-// Update a role_permission by ID
+// Update a role-permission by roleId and permissionId
 exports.update = async (req, res) => {
   try {
-    const { roleid, permissionsid } = req.params;
-    const [updated] = await Role_Permissions.update(req.body, {
-      where: { roleid, permissionsid }
+    const { roleId, permissionId } = req.params;
+    const [updated] = await RolePermission.update(req.body, {
+      where: { roleId, permissionId }
     });
 
     if (updated) {
-      const updatedRolePermission = await Role_Permissions.findOne({
-        where: { roleid, permissionsid }
+      const updatedRolePermission = await RolePermission.findOne({
+        where: { roleId, permissionId }
       });
       res.status(200).json({ success: true, updatedRolePermission });
     } else {
-      res.status(404).json({ success: false, message: "Role_permission not found!!!" });
+      res.status(404).json({ success: false, message: "Role-permission not found!!!" });
     }
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
   }
 };
 
-// Delete a role_permission by ID
-exports.deleteRole_Permission = async (req, res) => {
+// Delete a role-permission by roleId and permissionId
+exports.deleteRolePermission = async (req, res) => {
   try {
-    const { roleid, permissionsid } = req.params;
-    const deleted = await Role_Permissions.destroy({
-      where: { roleid, permissionsid }
+    const { roleId, permissionId } = req.params;
+    const deleted = await RolePermission.destroy({
+      where: { roleId, permissionId }
     });
 
     if (deleted) {
-      res.status(204).json({ success: true, message: "Role_permission deleted" });
+      res.status(200).json({ success: true, message: "Role-permission deleted" });
     } else {
-      res.status(404).json({ success: false, message: "Role_permission not found" });
+      res.status(404).json({ success: false, message: "Role-permission not found" });
     }
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
