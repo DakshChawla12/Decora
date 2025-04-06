@@ -1,6 +1,5 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const { sequelize } = require("../config/database");
-const Product = require("./product");
 
 const Brand = sequelize.define("Brand", {
     brandId: {
@@ -14,6 +13,8 @@ const Brand = sequelize.define("Brand", {
         allowNull: false,
         unique: true,
     },
+}, {
+    timestamps: false
 });
 
 module.exports = Brand;
