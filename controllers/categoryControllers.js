@@ -1,4 +1,4 @@
-const Category = require("../models/category");
+const {Category} = require("../models/associations");
 
 // Create a new category
 exports.create = async (req, res) => {

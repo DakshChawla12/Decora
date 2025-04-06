@@ -57,12 +57,32 @@ Department.hasMany(Employee, { foreignKey: "departmentId", as: "employees" });
 Employee.belongsTo(Department, { foreignKey: "departmentId", as: "department" });
 
 // Category & Product Relationship
-Category.hasMany(Product, { foreignKey: "categoryId", as: "products" });
-Product.belongsTo(Category, { foreignKey: "categoryId", as: "category" });
+Category.hasMany(Product, {
+  foreignKey: "categoryId",
+  as: "products",
+  onDelete: "SET NULL",
+  onUpdate: "CASCADE"
+});
+Product.belongsTo(Category, {
+  foreignKey: "categoryId",
+  as: "category",
+  onDelete: "SET NULL",
+  onUpdate: "CASCADE"
+});
 
 // Brand & Product Relationship
-Brand.hasMany(Product, { foreignKey: "brandId", as: "products" });
-Product.belongsTo(Brand, { foreignKey: "brandId", as: "brand" });
+Brand.hasMany(Product, {
+  foreignKey: "brandId",
+  as: "products",
+  onDelete: "SET NULL",
+  onUpdate: "CASCADE"
+});
+Product.belongsTo(Brand, {
+  foreignKey: "brandId",
+  as: "brand",
+  onDelete: "SET NULL",
+  onUpdate: "CASCADE"
+});
 
 // Customer & Order Relationship
 Customer.hasMany(Order, { foreignKey: "customerId", as: "orders" });
