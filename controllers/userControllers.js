@@ -1,80 +1,135 @@
-const User = require("../models/user");
-const Role = require("../models/roles");
+const { User, Role } = require("../models/associations");
+const { hashPassword, comparePassword } = require("../config/passwordUtils");
 
-// Create a new user
-exports.create = async (req, res) => {
+exports.createUser = async (req, res) => {
     try {
-        const user = await User.create(req.body);
-        res.status(201).json({ success: true, user });
+        const { name, email, password, roleId = 2 } = req.body;
+
+        const existingUser = await User.findOne({ where: { email } });
+        if (existingUser)
+            return res.status(400).json({ success: false, message: "Email already in use" });
+
+        const role = await Role.findByPk(roleId);
+        if (!role)
+            return res.status(404).json({ success: false, message: "Role not found" });
+
+        const hashedPassword = await hashPassword(password);
+
+        const user = await User.create({ name, email, password: hashedPassword, roleId });
+
+        res.status(201).json({ success: true, message: "User created successfully", user });
     } catch (error) {
-        res.status(400).json({ success: false, error: error.message });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// Get all users with roles
-exports.findAll = async (req, res) => {
+exports.getUsers = async (req, res) => {
     try {
         const users = await User.findAll({
-            include: [{ model: Role, attributes: ["id", "name"] }]
+            include: { model: Role, as: 'role' }
         });
-        res.status(200).json({ success: true, users });
+
+        res.json({ success: true, message: "Users fetched successfully", users });
     } catch (error) {
-        res.status(400).json({ success: false, error: error.message });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// Get a user by ID
-exports.findOne = async (req, res) => {
+exports.getUser = async (req, res) => {
     try {
-        const user = await User.findOne({
-            where: { id: req.params.id },
-            include: [{ model: Role, attributes: ["id", "name"] }]
+        if (!req.session.userId) {
+            return res.status(401).json({ success: false, message: 'User not authenticated' });
+        }
+
+        const user = await User.findByPk(req.params.id, {
+            include: { model: Role, as: 'role' }
         });
 
-        if (user) {
-            res.status(200).json({ success: true, user });
-        } else {
-            res.status(404).json({ success: false, message: "User not found" });
-        }
+        if (!user)
+            return res.status(404).json({ success: false, message: 'User not found' });
+
+        res.json({ success: true, message: "User fetched successfully", user });
     } catch (error) {
-        res.status(400).json({ success: false, error: error.message });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// Update a user by ID
-exports.update = async (req, res) => {
+exports.updateUser = async (req, res) => {
     try {
-        const [updated] = await User.update(req.body, {
-            where: { id: req.params.id } // Fixed `where` clause
-        });
+        const { name, email, password, roleId } = req.body;
 
-        if (updated) {
-            const updatedUser = await User.findOne({
-                where: { id: req.params.id },
-                include: [{ model: Role, attributes: ["id", "name"] }]
-            });
-            res.status(200).json({ success: true, updatedUser });
-        } else {
-            res.status(404).json({ success: false, message: "User not found" });
-        }
+        const user = await User.findByPk(req.session.userId);
+
+        if (!user)
+            return res.status(404).json({ success: false, message: 'User not found' });
+
+        const hashedPassword = password ? await hashPassword(password) : user.password;
+
+        await user.update({ name, email, password: hashedPassword, roleId });
+
+        res.json({ success: true, message: "User updated successfully", user });
     } catch (error) {
-        res.status(400).json({ success: false, error: error.message });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// Delete a user by ID
 exports.deleteUser = async (req, res) => {
     try {
-        const deleted = await User.destroy({
-            where: { id: req.params.id } // Fixed `where` clause
-        });
+        const user = await User.findByPk(req.session.userId);
 
-        if (deleted) {
-            res.status(200).json({ success: true, message: "User deleted" }); // Changed `204` to `200`
-        } else {
-            res.status(404).json({ success: false, message: "User not found" });
-        }
+        if (!user)
+            return res.status(404).json({ success: false, message: 'User not found' });
+
+        await user.destroy();
+        res.json({ success: true, message: "User deleted successfully" });
     } catch (error) {
-        res.status(400).json({ success: false, error: error.message });
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+exports.login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        const user = await User.findOne({
+            where: { email },
+            include: { model: Role, as: 'role' }
+        });
+        if (!user)
+            return res.status(401).json({ success: false, message: 'Invalid email or password' });
+
+        const isMatch = await comparePassword(password, user.password);
+        if (!isMatch)
+            return res.status(401).json({ success: false, message: 'Invalid email or password' });
+
+        req.session.userId = user.id;
+        req.session.email = user.email;
+        req.session.name = user.name;
+        req.session.roleId = user.roleId;
+
+        res.json({
+            success: true,
+            message: "Login successful",
+            user: { id: user.id, name: user.name, email: user.email, roleId: user.roleId, roleName: user.role ? user.role.name : 'Unknown' }
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+exports.logout = (req, res) => {
+    try {
+        if (!req.session || !req.session.userId) {
+            return res.status(400).json({ success: false, message: 'No user is logged in' });
+        }
+
+        req.session.destroy((err) => {
+            if (err) {
+                return res.status(500).json({ success: false, message: 'Failed to log out' });
+            }
+            res.json({ success: true, message: 'Logged out successfully' });
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
     }
 };

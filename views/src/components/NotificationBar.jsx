@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import ticketPercent from "../assets/ticketPercent.png";
-import unionIcon from "../assets/unionIcon.png";
+import unionIcon from "../assets/iconImages/unionIcon.png";
 
 const NotificationBar = () => {
     return (

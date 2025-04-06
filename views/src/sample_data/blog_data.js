@@ -1,12 +1,12 @@
-import blog_image1 from '../assets/blog_image1.png';
-import blog_image2 from '../assets/blog_image2.png';
-import blog_image3 from '../assets/blog_image3.png';
-import blog_image4 from '../assets/blog_image4.png';
-import blog_image5 from '../assets/blog_image5.png';
-import blog_image6 from '../assets/blog_image6.png';
-import blog_image7 from '../assets/blog_image7.png';
-import blog_image8 from '../assets/blog_image8.png';
-import blog_image9 from '../assets/blog_image9.png';
+import blog_image1 from '../assets/blogImages/blog_image1.png';
+import blog_image2 from '../assets/blogImages/blog_image2.png';
+import blog_image3 from '../assets/blogImages/blog_image3.png';
+import blog_image4 from '../assets/blogImages/blog_image4.png';
+import blog_image5 from '../assets/blogImages/blog_image5.png';
+import blog_image6 from '../assets/blogImages/blog_image6.png';
+import blog_image7 from '../assets/blogImages/blog_image7.png';
+import blog_image8 from '../assets/blogImages/blog_image8.png';
+import blog_image9 from '../assets/blogImages/blog_image9.png';
 
 const blogData = [
     {
