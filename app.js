@@ -1,9 +1,18 @@
 require("dotenv").config();
 const express = require("express");
 const { connectDB } = require("./config/database");
-const syncDatabase = require("./config/syncDatabase"); // Import sync function
+const syncDatabase = require("./config/syncDatabase");
+const session = require('express-session');
+const cors = require('cors');
 
 const app = express();
+app.use(cors());
+app.use(session({
+    secret: process.env.SESSION_SECRET, // use env variable in production
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false } // set to true if using HTTPS
+}));
 
 //middleware
 app.use(express.json());
@@ -33,13 +42,13 @@ const subscriptionRoutes = require("./routes/subscriptionRoutes");
 const wishListRoutes = require("./routes/wishlistRoutes");
 
 // *** Setting the routers *** //
-app.use("/api/cart",cartRoutes);
-app.use("/api/discount",discountRoutes);
-app.use("/api/notification",notificationRoutes);
-app.use("/api/order",orderRoutes);
-app.use("/api/payment",paymentRoutes);
-app.use("/api/subscription",subscriptionRoutes);
-app.use("/api/wishlist",wishListRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/discount", discountRoutes);
+app.use("/api/notification", notificationRoutes);
+app.use("/api/order", orderRoutes);
+app.use("/api/payment", paymentRoutes);
+app.use("/api/subscription", subscriptionRoutes);
+app.use("/api/wishlist", wishListRoutes);
 app.use("/api/country", countryRoutes);
 app.use("/api/department", departmentRoutes);
 app.use("/api/customer", customerRoutes);

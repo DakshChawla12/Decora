@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import searchIcon from "../assets/searchIcon.png";
-import userIcon from "../assets/userIcon.png";
-import bagIcon from "../assets/bagIcon.png";
-import cartItemsIcon from "../assets/cartItemsIcon.png";
-import hamburgIcon from "../assets/hamburgIcon.png"
-import unionIcon from "../assets/unionIcon.png"
+import searchIcon from "../assets/iconImages/searchIcon.png";
+import userIcon from "../assets/iconImages/userIcon.png";
+import bagIcon from "../assets/iconImages/bagIcon.png";
+import cartItemsIcon from "../assets/iconImages/cartItemsIcon.png";
+import hamburgIcon from "../assets/iconImages/hamburgIcon.png"
+import unionIcon from "../assets/iconImages/unionIcon.png"
 
 const NavBar = () => {
     const [menuOpen, setMenuOpen] = useState(false);

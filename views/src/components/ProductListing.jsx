@@ -1,7 +1,7 @@
 import React from "react";
-import products from "../assets/products.js";
-import newIcon from "../assets/newIcon.png";
-import discountIcon from "../assets/discountIcon.png";
+import products from "../sample_data/products";
+import newIcon from "../assets/iconImages/newIcon.png";
+import discountIcon from "../assets/iconImages/discountIcon.png";
 
 const ProductListing = () => {
     return (

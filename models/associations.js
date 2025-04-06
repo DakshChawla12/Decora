@@ -1,5 +1,5 @@
-const User = require("./user");
-const Role = require("./roles");
+const User = require('./user');
+const Role = require('./roles');
 const Permission = require("./permissions");
 const RolePermission = require("./role_permissions");
 const Employee = require("./employee");
@@ -41,8 +41,8 @@ Region.hasMany(State, { foreignKey: "regionId", as: "states" });
 State.belongsTo(Region, { foreignKey: "regionId", as: "region" });
 
 // Role & User Relationship
-Role.hasMany(User, { foreignKey: "roleId", as: "users" });
-User.belongsTo(Role, { foreignKey: "roleId", as: "role" });
+User.belongsTo(Role, { foreignKey: 'roleId', as: 'role' });
+Role.hasMany(User, { foreignKey: 'roleId', as: 'users' });
 
 // Role & Permission Relationship (Many-to-Many)
 Role.belongsToMany(Permission, { through: RolePermission, foreignKey: "roleId", as: "permissions" });

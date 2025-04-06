@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import instaIcon from "../assets/instaIcon.png";
-import facebookIcon from "../assets/facebookIcon.png";
-import youtubeIcon from "../assets/youtubeIcon.png";
+import instaIcon from "../assets/iconImages/instaIcon.png";
+import facebookIcon from "../assets/iconImages/facebookIcon.png";
+import youtubeIcon from "../assets/iconImages/youtubeIcon.png";
 
 const Footer = () => {
     return (

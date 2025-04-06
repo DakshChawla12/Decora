@@ -1,5 +1,5 @@
 import React from 'react';
-import blogImage from '../assets/blogimage.png'; // Adjust the path if needed
+import blogImage from '../assets/blogImages/blogimage.png'; // Adjust the path if needed
 import blogData from '../sample_data/blog_data.js';
 import Blog_card from './Blog_card';
 import { FaAngleDown } from "react-icons/fa";
