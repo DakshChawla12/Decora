@@ -78,7 +78,7 @@ const ProductListing = () => {
             </div>
 
             <div className="flex justify-center mt-12">
-                <button className="px-6 py-2 rounded-full border">
+                <button className="px-6 py-2 rounded-full border hover:bg-black hover:text-white transition duration-200">
                     Show More
                 </button>
             </div>
