@@ -1,9 +1,9 @@
-const { User, Role } = require("../models/associations");
+const { User, Role, Customer } = require("../models/associations");
 const { hashPassword, comparePassword } = require("../config/passwordUtils");
 
 exports.createUser = async (req, res) => {
     try {
-        const { name, email, password, roleId = 2 } = req.body;
+        const { name, email, password, roleId = 3 } = req.body;
 
         const existingUser = await User.findOne({ where: { email } });
         if (existingUser)
@@ -95,6 +95,7 @@ exports.login = async (req, res) => {
             where: { email },
             include: { model: Role, as: 'role' }
         });
+
         if (!user)
             return res.status(401).json({ success: false, message: 'Invalid email or password' });
 
@@ -102,20 +103,37 @@ exports.login = async (req, res) => {
         if (!isMatch)
             return res.status(401).json({ success: false, message: 'Invalid email or password' });
 
+        // Check if the customer record exists
+        let customer = await Customer.findOne({ where: { userId: user.id } });
+        if (!customer) {
+            // Create a customer record if not found
+            customer = await Customer.create({ userId: user.id, name: user.name });
+        }
+
+        // Store user and customer info in session
         req.session.userId = user.id;
         req.session.email = user.email;
         req.session.name = user.name;
         req.session.roleId = user.roleId;
+        req.session.customerId = customer.id; // Storing customer ID
 
         res.json({
             success: true,
             message: "Login successful",
-            user: { id: user.id, name: user.name, email: user.email, roleId: user.roleId, roleName: user.role ? user.role.name : 'Unknown' }
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                roleId: user.roleId,
+                roleName: user.role ? user.role.name : 'Unknown',
+                customerId: customer.id // Sending customer ID to frontend
+            }
         });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
 
 exports.logout = (req, res) => {
     try {
