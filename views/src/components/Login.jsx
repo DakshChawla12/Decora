@@ -1,40 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import leftImg from '../assets/Left.png';
 import { IoEyeOutline } from "react-icons/io5";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { Link } from 'react-router-dom';
-import axios from 'axios';
-import { showErrorToast, showSuccessToast } from '../utils/toatsUtils';
-import { useNavigate } from 'react-router-dom';
+import { StoreContext } from '../Context/StoreContext'; // adjust the path if needed
 
 const Login = () => {
     const [view, setView] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const toggleView = () => {
-        setView(!view);
-    };
+    const toggleView = () => setView(!view);
 
-    const navigate = useNavigate();
+    const { loginUser } = useContext(StoreContext);
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-
-        try {
-            const response = await axios.post('http://localhost:5001/api/user/login', {
-                email,
-                password,
-            });
-
-            const { success, message } = response.data;
-
-            if (success == true) {
-                showSuccessToast(message);
-            }
-        } catch (error) {
-            showErrorToast(error.response?.data?.message || "Login failed.");
-        }
+        loginUser(email, password);
     };
 
     return (
@@ -81,14 +63,17 @@ const Login = () => {
                                 placeholder="Password"
                                 required
                             />
-                            {view ? <FaRegEyeSlash
-                                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600 cursor-pointer"
-                                onClick={toggleView}
-                            /> : <IoEyeOutline
-                                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600 cursor-pointer"
-                                onClick={toggleView}
-                            />
-                            }
+                            {view ? (
+                                <FaRegEyeSlash
+                                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600 cursor-pointer"
+                                    onClick={toggleView}
+                                />
+                            ) : (
+                                <IoEyeOutline
+                                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600 cursor-pointer"
+                                    onClick={toggleView}
+                                />
+                            )}
                         </div>
 
                         {/* Login Button */}

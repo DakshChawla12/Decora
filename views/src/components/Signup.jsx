@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import leftImg from '../assets/Left.png';
 import { IoEyeOutline } from "react-icons/io5";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { Link } from 'react-router-dom';
-import axios from 'axios';
-import { showSuccessToast, showErrorToast } from '../utils/toatsUtils';
-import { useNavigate } from 'react-router-dom';
+import { StoreContext } from '../Context/StoreContext'; // import context
 
 const Signup = () => {
     const [view, setView] = useState(false);
@@ -15,33 +13,18 @@ const Signup = () => {
         password: '',
     });
 
-    const toggleView = () => setView(!view);
+    const { signupUser } = useContext(StoreContext); // use context
 
-    const navigate = useNavigate();
+    const toggleView = () => setView(!view);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-
-        try {
-            const response = await axios.post('http://localhost:5001/api/user/register', formData);
-            const { success, message } = response.data;
-
-            if (success == true) {
-                showSuccessToast(message || 'Signup successful!');
-                setTimeout(() => {
-                    navigate('/login');
-                }, 2000)
-            }
-
-        } catch (err) {
-            const errorMsg = err.response?.data?.message || 'Signup failed.';
-            showErrorToast(errorMsg);
-        }
+        signupUser(formData);
     };
 
     return (
@@ -62,7 +45,6 @@ const Signup = () => {
                     </p>
 
                     <form className="flex flex-col gap-[1.5rem]" onSubmit={handleSubmit}>
-                        {/* Name */}
                         <input
                             type="text"
                             name="name"
@@ -73,7 +55,6 @@ const Signup = () => {
                             required
                         />
 
-                        {/* Email */}
                         <input
                             type="email"
                             name="email"
@@ -84,7 +65,6 @@ const Signup = () => {
                             required
                         />
 
-                        {/* Password */}
                         <div className="relative w-full">
                             <input
                                 type={view ? "text" : "password"}
@@ -101,11 +81,9 @@ const Signup = () => {
                             /> : <IoEyeOutline
                                 className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600 cursor-pointer"
                                 onClick={toggleView}
-                            />
-                            }
+                            />}
                         </div>
 
-                        {/* Terms */}
                         <div className="flex gap-3 items-center text-sm">
                             <input type="radio" className="h-[1rem] w-[1rem]" required />
                             <p className="text-[#6C7275]">
@@ -114,8 +92,10 @@ const Signup = () => {
                             </p>
                         </div>
 
-                        {/* Button */}
-                        <button type="submit" className="w-full bg-black text-white text-[0.9rem] py-3 rounded-md hover:bg-gray-800 transition">
+                        <button
+                            type="submit"
+                            className="w-full bg-black text-white text-[0.9rem] py-3 rounded-md hover:bg-gray-800 transition"
+                        >
                             Sign Up
                         </button>
                     </form>
