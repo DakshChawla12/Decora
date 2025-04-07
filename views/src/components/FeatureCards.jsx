@@ -34,7 +34,7 @@ const features = [
 
 const FeatureCards = () => {
     return (
-        <section className="w-full px-4 md:px-16 lg:px-28 py-16">
+        <section className="px-4 sm:px-6 lg:px-8 w-[85%] mx-auto py-16">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-center">
                 {features.map((feature) => (
                     <div

@@ -5,6 +5,8 @@ import "./App.css";
 import ProductsPage from "./pages/ProductsPage";
 import BlogPage from "./pages/BlogPage";
 import LandingPage from "./pages/LandingPage";
+import ContactUsPage from "./pages/ContactUsPage";
+
 
 const App = () => {
     return (
@@ -14,6 +16,7 @@ const App = () => {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/blog" element={<BlogPage />} />
+            <Route path="/contact" element={<ContactUsPage />} />
         </Routes>
     );
 };
