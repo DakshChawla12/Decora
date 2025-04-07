@@ -15,7 +15,7 @@ const AboutUsBanner = () => {
                     />
                 </div>
 
-                <div className="w-full sm:w-1/2 bg-white flex items-center justify-center p-6 sm:p-[4rem]">
+                <div className="w-full sm:w-1/2 bg-gray-100 flex items-center justify-center p-6 sm:p-[4rem]">
                     <div className="w-full sm:w-[80%] flex flex-col gap-4 text-center sm:text-left">
                         <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold">About Us</h2>
                         <p className="text-base sm:text-lg text-gray-700">
