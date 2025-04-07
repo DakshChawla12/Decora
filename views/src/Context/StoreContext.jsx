@@ -1,6 +1,7 @@
 import { createContext, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { showErrorToast, showSuccessToast } from '../utils/toatsUtils';
 
 export const StoreContext = createContext(null);
 
@@ -11,6 +12,9 @@ const StoreContextProvider = ({ children }) => {
 
     const [filterCategory, setFilterCategory] = useState("All Categories");
     const [filterPrice, setFilterPrice] = useState("All Prices");
+
+    const [user, setUser] = useState(null);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const navigate = useNavigate();
 
@@ -45,6 +49,43 @@ const StoreContextProvider = ({ children }) => {
         }
     };
 
+    const loginUser = async (email, password) => {
+        try {
+            const response = await axios.post("http://localhost:5001/api/user/login", {
+                email,
+                password,
+            });
+
+            const { success, message, user: userData } = response.data;
+
+            if (success) {
+                showSuccessToast(message);
+                setUser(userData || { email }); // fallback if no user data returned
+                setIsLoggedIn(true);
+                navigate("/"); // redirect to homepage or dashboard
+            }
+        } catch (error) {
+            showErrorToast(error.response?.data?.message || "Login failed.");
+        }
+    };
+
+    const signupUser = async (formData) => {
+        try {
+            const response = await axios.post('http://localhost:5001/api/user/register', formData);
+            const { success, message } = response.data;
+
+            if (success) {
+                showSuccessToast(message || 'Signup successful!');
+                setTimeout(() => {
+                    navigate('/login');
+                }, 2000);
+            }
+        } catch (err) {
+            const errorMsg = err.response?.data?.message || 'Signup failed.';
+            showErrorToast(errorMsg);
+        }
+    };
+
 
 
     return (
@@ -54,6 +95,8 @@ const StoreContextProvider = ({ children }) => {
                 loadingProducts,
                 productsError,
                 fetchProducts,
+                signupUser,
+                loginUser,
                 filterCategory,
                 setFilterCategory,
                 filterPrice,
