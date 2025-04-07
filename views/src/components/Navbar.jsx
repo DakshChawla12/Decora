@@ -11,7 +11,7 @@ const NavBar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
 
     return (
-        <div className="w-full px-4 sm:px-6 lg:px-28 bg-white">
+        <div className="w-[85%] mx-auto px-4 sm:px-6 lg:px-8 bg-white">
             <nav className="w-full h-[58px] flex items-center justify-between py-4">
                 <div className="text-3xl font-bold text-gray-800">Decora</div>
 
