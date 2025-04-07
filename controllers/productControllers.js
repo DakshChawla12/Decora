@@ -1,4 +1,5 @@
-const {Product,Category,Brand} = require('../models/associations');
+const { Product, Category, Brand } = require('../models/associations');
+const { Op } = require("sequelize");
 
 // Create a new product
 exports.create = async (req, res) => {
@@ -85,3 +86,51 @@ exports.deleteProduct = async (req, res) => {
         res.status(400).json({ success: false, error: error.message });
     }
 };
+
+// Filter products by category, brand, and/or price
+exports.filter = async (req, res) => {
+    try {
+        const { minPrice, maxPrice } = req.body;
+
+        const whereClause = {};
+
+        // Add price filter
+        if (minPrice && maxPrice) {
+            whereClause.price = {
+                [Op.between]: [minPrice, maxPrice],
+            };
+        } else if (minPrice) {
+            whereClause.price = {
+                [Op.gte]: minPrice,
+            };
+        } else if (maxPrice) {
+            whereClause.price = {
+                [Op.lte]: maxPrice,
+            };
+        }
+
+        const products = await Product.findAll({
+            where: whereClause,
+            include: [
+                { model: Category, as: 'category' },
+                { model: Brand, as: 'brand' }
+            ]
+        });
+
+        res.status(200).json({
+            success: true,
+            products,
+        });
+
+    } catch (error) {
+        console.error("Error fetching products by price:", error);
+        res.status(500).json({
+            success: false,
+            error: 'Internal Server Error',
+        });
+    }
+};
+
+
+
+
