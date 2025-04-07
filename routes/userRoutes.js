@@ -18,7 +18,7 @@ const validateUser = [
 ];
 
 // Routes
-router.post('/register', validateUser, userController.createUser);
+router.post('/register', userController.createUser);
 router.post('/login', validateUser, userController.login);
 router.post('/logout', isAuthenticated, userController.logout);
 

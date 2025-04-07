@@ -1,35 +1,62 @@
-const Cart = require("../models/cart");
-const Customer = require("../models/customer");
-const Product = require("../models/product");
+const {Cart,Customer,Product} = require('../models/associations');
 
-// Add product to cart
 exports.addToCart = async (req, res) => {
     try {
-        const { customerId, productId, quantity } = req.body;
+        const customerId = req.session.customerId; // Use customerId from session
+        const { productId } = req.body;
 
-        const customer = await Customer.findByPk(customerId);
-        const product = await Product.findByPk(productId);
-
-        if (!customer) {
-            return res.status(404).json({ success: false, message: "Customer not found" });
+        if (!customerId) {
+            return res.status(401).json({ success: false, message: "Not logged in" });
         }
 
+        const product = await Product.findByPk(productId);
         if (!product) {
             return res.status(404).json({ success: false, message: "Product not found" });
         }
 
-        const cartItem = await Cart.create({ customerId, productId, quantity });
-        res.status(201).json({ success: true, cartItem });
+        let cartItem = await Cart.findOne({ where: { customerId, productId } });
+
+        if (cartItem) {
+            cartItem.quantity += 1;
+            await cartItem.save();
+        } else {
+            cartItem = await Cart.create({ customerId, productId, quantity: 1 });
+        }
+
+        // Fetch updated cart with product details
+        const fullCart = await Cart.findAll({
+            where: { customerId },
+            include: {
+                model: Product,
+                as: 'product' // Make sure you’ve defined this alias in the association
+            }
+        });
+
+        res.status(200).json({
+            success: true,
+            message: "Cart updated successfully",
+            cart: fullCart
+        });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
 };
 
+
 // Get all cart items for a customer
 exports.getCartItems = async (req, res) => {
     try {
-        const { customerId } = req.params;
-        const cartItems = await Cart.findAll({ where: { customerId }, include: [Product] });
+        const { customerId } = req.session;
+
+        if (!customerId) {
+            return res.status(401).json({ success: false, message: "Customer not logged in" });
+        }
+
+        const cartItems = await Cart.findAll({
+            where: { customerId },
+            include: [{ model: Product, as: "product" }]
+        });
+
         res.status(200).json({ success: true, cartItems });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
@@ -39,16 +66,35 @@ exports.getCartItems = async (req, res) => {
 // Update cart item quantity
 exports.updateCartItem = async (req, res) => {
     try {
-        const { customerId, productId } = req.params;
-        const { quantity } = req.body;
+        const { customerId } = req.session;
+        const { productId, quantity } = req.body; // quantity should be either +1 or -1
 
-        const updated = await Cart.update({ quantity }, { where: { customerId, productId } });
-        if (updated[0]) {
-            const updatedCartItem = await Cart.findOne({ where: { customerId, productId } });
-            res.status(200).json({ success: true, updatedCartItem });
-        } else {
-            res.status(404).json({ success: false, message: "Cart item not found" });
+        if (!customerId) {
+            return res.status(401).json({ success: false, message: "Customer not logged in" });
         }
+
+        const cartItem = await Cart.findOne({ where: { customerId, productId } });
+
+        if (!cartItem) {
+            return res.status(404).json({ success: false, message: "Cart item not found" });
+        }
+
+        const newQuantity = cartItem.quantity + quantity;
+
+        if (newQuantity <= 0) {
+            await cartItem.destroy();
+        } else {
+            cartItem.quantity = newQuantity;
+            await cartItem.save();
+        }
+
+        const updatedCart = await Cart.findAll({
+            where: { customerId },
+            include: [{ model: Product, as: "product" }]
+        });
+
+        res.status(200).json({ success: true, cart: updatedCart });
+
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
@@ -57,24 +103,45 @@ exports.updateCartItem = async (req, res) => {
 // Remove an item from the cart
 exports.removeCartItem = async (req, res) => {
     try {
-        const { customerId, productId } = req.params;
+        const { customerId } = req.session;
+        const { productId } = req.body;
+
+        if (!customerId) {
+            return res.status(401).json({ success: false, message: "Customer not logged in" });
+        }
+
         const deleted = await Cart.destroy({ where: { customerId, productId } });
+
         if (deleted) {
-            res.status(204).json({ success: true, message: "Cart item removed" });
+            const updatedCart = await Cart.findAll({
+                where: { customerId },
+                include: [{ model: Product, as: "product" }]
+            });
+
+            res.status(200).json({ success: true, message: "Cart item removed", cart: updatedCart });
         } else {
             res.status(404).json({ success: false, message: "Cart item not found" });
         }
+
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
 };
 
+
 // Clear cart for a customer
 exports.clearCart = async (req, res) => {
     try {
-        const { customerId } = req.params;
+        const { customerId } = req.session;
+
+        if (!customerId) {
+            return res.status(401).json({ success: false, message: "Customer not logged in" });
+        }
+
         await Cart.destroy({ where: { customerId } });
-        res.status(200).json({ success: true, message: "Cart cleared" });
+
+        res.status(200).json({ success: true, message: "Cart cleared", cart: [] });
+
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
