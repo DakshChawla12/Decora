@@ -33,13 +33,12 @@ const Footer = () => {
             </div>
 
             <div className="flex flex-col md:flex-row justify-between items-center border-t border-gray-700 pt-6 space-y-4 md:space-y-0">
-                {/* Legal links */}
-                <div className="flex flex-wrap gap-4 text-xs text-gray-500">
+                <div className="flex flex-wrap gap-4 text-xs text-gray-300">
                     <span>© {new Date().getFullYear()} Decora. All rights reserved.</span>
-                    <Link to="/privacy" className="hover:text-white">
+                    <Link to="/privacy" className="hover:text-white font-semibold">
                         Privacy Policy
                     </Link>
-                    <Link to="/terms" className="hover:text-white">
+                    <Link to="/terms" className="hover:text-white font-semibold">
                         Terms of Use
                     </Link>
                 </div>

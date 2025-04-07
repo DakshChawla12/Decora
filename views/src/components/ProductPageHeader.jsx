@@ -3,7 +3,7 @@ import productPageImage from "../assets/productPageImage.png";
 
 const ProductPageHeader = () => {
     return (
-        <div className="w-full relative">
+        <div className="w-[85%] mx-auto relative">
             <img
                 src={productPageImage}
                 alt="Product Header"
