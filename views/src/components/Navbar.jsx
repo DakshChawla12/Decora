@@ -11,15 +11,15 @@ const NavBar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
 
     return (
-        <div className="w-full px-4 sm:px-6 lg:px-28 bg-white shadow">
+        <div className="w-full px-4 sm:px-6 lg:px-28 bg-white">
             <nav className="w-full h-[58px] flex items-center justify-between py-4">
-                <div className="text-lg font-bold text-gray-800">Decora</div>
+                <div className="text-3xl font-bold text-gray-800">Decora</div>
 
                 <div className="hidden md:flex space-x-6 text-gray-600">
                     <Link to="/" className="hover:text-black font-medium">
                         Home
                     </Link>
-                    <Link to="/product" className="hover:text-black font-medium">
+                    <Link to="/products" className="hover:text-black font-medium">
                         Product
                     </Link>
                     <Link to="/shop" className="hover:text-black font-medium">

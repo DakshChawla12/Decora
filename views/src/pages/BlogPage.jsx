@@ -6,9 +6,8 @@ import NewsLetterHeader from '../components/NewsLetterHeader.jsx'
 
 const BlogPage = () => {
     return (
-        <div>
+        <div className='h-[100%] w-[100%]'>
             <Navbar/>
-
             <Blog />
             <NewsLetterHeader/>
             <Footer/>
