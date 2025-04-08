@@ -6,6 +6,7 @@ import ProductsPage from "./pages/ProductsPage";
 import BlogPage from "./pages/BlogPage";
 import LandingPage from "./pages/LandingPage";
 import ContactUsPage from "./pages/ContactUsPage";
+import SingleProductPage from "./pages/SingleProductPage";
 
 
 const App = () => {
@@ -17,6 +18,7 @@ const App = () => {
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/contact" element={<ContactUsPage />} />
+            <Route path="/single" element={<SingleProductPage />} />
         </Routes>
     );
 };
