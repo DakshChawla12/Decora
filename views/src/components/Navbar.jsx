@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import searchIcon from "../assets/iconImages/searchIcon.png";
 import userIcon from "../assets/iconImages/userIcon.png";
@@ -6,9 +6,11 @@ import bagIcon from "../assets/iconImages/bagIcon.png";
 import cartItemsIcon from "../assets/iconImages/cartItemsIcon.png";
 import hamburgIcon from "../assets/iconImages/hamburgIcon.png"
 import unionIcon from "../assets/iconImages/unionIcon.png"
+import { StoreContext } from "../Context/StoreContext";
 
 const NavBar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
+    const { handleNavigate } = useContext(StoreContext);
 
     return (
         <div className="w-[85%] mx-auto px-4 sm:px-6 lg:px-8 bg-white">
@@ -34,7 +36,7 @@ const NavBar = () => {
                     <img src={searchIcon} className="h-5 w-5" alt="Search" />
                     <img src={userIcon} className="h-5 w-5" alt="User" />
                     <img src={bagIcon} className="h-5 w-5" alt="Bag" />
-                    <img src={cartItemsIcon} className="h-5 w-5" alt="Cart" />
+                    <img src={cartItemsIcon} className="h-5 w-5" alt="Cart" onClick={() => handleNavigate('/cart')} />
 
                     <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden">
                         {menuOpen ? (

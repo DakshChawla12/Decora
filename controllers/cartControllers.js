@@ -1,8 +1,9 @@
-const {Cart,Customer,Product} = require('../models/associations');
+const { Cart, Customer, Product } = require('../models/associations');
 
+// Add product to cart
 exports.addToCart = async (req, res) => {
     try {
-        const customerId = req.session.customerId; // Use customerId from session
+        const customerId = req.user.customerId;
         const { productId } = req.body;
 
         if (!customerId) {
@@ -23,12 +24,11 @@ exports.addToCart = async (req, res) => {
             cartItem = await Cart.create({ customerId, productId, quantity: 1 });
         }
 
-        // Fetch updated cart with product details
         const fullCart = await Cart.findAll({
             where: { customerId },
             include: {
                 model: Product,
-                as: 'product' // Make sure you’ve defined this alias in the association
+                as: 'product'
             }
         });
 
@@ -42,11 +42,10 @@ exports.addToCart = async (req, res) => {
     }
 };
 
-
-// Get all cart items for a customer
+// Get all cart items
 exports.getCartItems = async (req, res) => {
     try {
-        const { customerId } = req.session;
+        const customerId = req.user.customerId;
 
         if (!customerId) {
             return res.status(401).json({ success: false, message: "Customer not logged in" });
@@ -63,11 +62,11 @@ exports.getCartItems = async (req, res) => {
     }
 };
 
-// Update cart item quantity
+// Update quantity of a cart item
 exports.updateCartItem = async (req, res) => {
     try {
-        const { customerId } = req.session;
-        const { productId, quantity } = req.body; // quantity should be either +1 or -1
+        const customerId = req.user.customerId;
+        const { productId, quantity } = req.body;
 
         if (!customerId) {
             return res.status(401).json({ success: false, message: "Customer not logged in" });
@@ -94,16 +93,15 @@ exports.updateCartItem = async (req, res) => {
         });
 
         res.status(200).json({ success: true, cart: updatedCart });
-
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
 };
 
-// Remove an item from the cart
+// Remove specific item from cart
 exports.removeCartItem = async (req, res) => {
     try {
-        const { customerId } = req.session;
+        const customerId = req.user.customerId;
         const { productId } = req.body;
 
         if (!customerId) {
@@ -122,17 +120,15 @@ exports.removeCartItem = async (req, res) => {
         } else {
             res.status(404).json({ success: false, message: "Cart item not found" });
         }
-
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
 };
 
-
-// Clear cart for a customer
+// Clear the entire cart
 exports.clearCart = async (req, res) => {
     try {
-        const { customerId } = req.session;
+        const customerId = req.user.customerId;
 
         if (!customerId) {
             return res.status(401).json({ success: false, message: "Customer not logged in" });
@@ -141,7 +137,6 @@ exports.clearCart = async (req, res) => {
         await Cart.destroy({ where: { customerId } });
 
         res.status(200).json({ success: true, message: "Cart cleared", cart: [] });
-
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
