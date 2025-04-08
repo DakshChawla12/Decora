@@ -7,6 +7,7 @@ import BlogPage from "./pages/BlogPage";
 import LandingPage from "./pages/LandingPage";
 import ContactUsPage from "./pages/ContactUsPage";
 import SingleProductPage from "./pages/SingleProductPage";
+import CartPage from "./pages/CartPage";
 
 
 const App = () => {
@@ -19,6 +20,7 @@ const App = () => {
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/contact" element={<ContactUsPage />} />
             <Route path="/single" element={<SingleProductPage />} />
+            <Route path="/cart" element={<CartPage />} />
         </Routes>
     );
 };
