@@ -9,14 +9,18 @@ const StoreContextProvider = ({ children }) => {
     const [products, setProducts] = useState([]);
     const [loadingProducts, setLoadingProducts] = useState(false);
     const [productsError, setProductsError] = useState(null);
+    const [cart, setCart] = useState([]);
 
     const [filterCategory, setFilterCategory] = useState("All Categories");
     const [filterPrice, setFilterPrice] = useState("All Prices");
 
     const [user, setUser] = useState(null);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const navigate = useNavigate();
+
+    const handleNavigate = (path) => {
+        navigate(path);
+    };
 
     const fetchProducts = async () => {
         setLoadingProducts(true);
@@ -49,6 +53,20 @@ const StoreContextProvider = ({ children }) => {
         }
     };
 
+    const fetchAllProducts = async () => {
+        setLoadingProducts(true);
+        setProductsError(null);
+
+        try {
+            const res = await axios.get("http://localhost:5001/api/product");
+            setProducts(res.data.products);
+        } catch (err) {
+            setProductsError("Failed to fetch all products.");
+        } finally {
+            setLoadingProducts(false);
+        }
+    };
+
     const loginUser = async (email, password) => {
         try {
             const response = await axios.post("http://localhost:5001/api/user/login", {
@@ -56,13 +74,13 @@ const StoreContextProvider = ({ children }) => {
                 password,
             });
 
-            const { success, message, user: userData } = response.data;
+            const { success, message, user, token } = response.data;
 
             if (success) {
                 showSuccessToast(message);
-                setUser(userData || { email }); // fallback if no user data returned
-                setIsLoggedIn(true);
-                navigate("/"); // redirect to homepage or dashboard
+                setUser(user || { email });
+                localStorage.setItem('token', token);
+                navigate("/");
             }
         } catch (error) {
             showErrorToast(error.response?.data?.message || "Login failed.");
@@ -86,6 +104,109 @@ const StoreContextProvider = ({ children }) => {
         }
     };
 
+    const fetchCart = async () => {
+        try {
+            const token = localStorage.getItem('token');
+
+            const response = await axios.get('http://localhost:5001/api/cart', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            const { success, cartItems } = response.data;
+            if (success) {
+                setCart(cartItems);
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const handleAddToCart = async (productId) => {
+        try {
+            const token = localStorage.getItem('token');
+
+            const response = await axios.post(
+                'http://localhost:5001/api/cart/add',
+                { productId },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            const { success, message, cart: updatedCart } = response.data;
+
+            if (success) {
+                setCart(updatedCart);
+                showSuccessToast(message || 'Product added to cart!');
+            }
+        } catch (error) {
+            console.error("Add to cart error:", error);
+            const errorMsg = error.response?.data?.message || 'Failed to add to cart.';
+            showErrorToast(errorMsg);
+        }
+    };
+
+    const updateCartHandler = async (productId, change) => {
+        try {
+            const token = localStorage.getItem('token');
+
+            const response = await axios.put(
+                'http://localhost:5001/api/cart',
+                {
+                    productId,
+                    quantity: change
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            const { success, cart: updatedCart } = response.data;
+
+            if (success) {
+                setCart(updatedCart);
+            }
+        } catch (error) {
+            console.error("Update cart error:", error);
+        }
+    };
+
+    const removeCartItem = async (productId) => {
+        try {
+            const token = localStorage.getItem('token');
+
+            const response = await axios.post(
+                'http://localhost:5001/api/cart/remove',
+                { productId },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            const { success, message, cart: updatedCart } = response.data;
+
+            if (success) {
+                setCart(updatedCart);
+                showSuccessToast(message || "Item removed from cart.");
+            }
+        } catch (error) {
+            console.error("Remove cart item error:", error);
+            const errorMsg = error.response?.data?.message || "Failed to remove item from cart.";
+            showErrorToast(errorMsg);
+        }
+    };
+
 
 
     return (
@@ -95,12 +216,20 @@ const StoreContextProvider = ({ children }) => {
                 loadingProducts,
                 productsError,
                 fetchProducts,
+                fetchAllProducts,
                 signupUser,
                 loginUser,
+                handleNavigate,
                 filterCategory,
                 setFilterCategory,
                 filterPrice,
                 setFilterPrice,
+                fetchCart,
+                user,
+                cart,
+                handleAddToCart,
+                updateCartHandler,
+                removeCartItem
             }}
         >
             {children}

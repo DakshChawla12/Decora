@@ -7,12 +7,6 @@ const cors = require('cors');
 
 const app = express();
 app.use(cors());
-app.use(session({
-    secret: process.env.SESSION_SECRET, // use env variable in production
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false } // set to true if using HTTPS
-}));
 
 //middleware
 app.use(express.json());
