@@ -10,11 +10,10 @@ const StoreContextProvider = ({ children }) => {
     const [loadingProducts, setLoadingProducts] = useState(false);
     const [productsError, setProductsError] = useState(null);
     const [cart, setCart] = useState([]);
-
     const [filterCategory, setFilterCategory] = useState("All Categories");
     const [filterPrice, setFilterPrice] = useState("All Prices");
-
     const [user, setUser] = useState(null);
+    const [reviews, setReviews] = useState([]);
 
     const navigate = useNavigate();
 
@@ -214,7 +213,65 @@ const StoreContextProvider = ({ children }) => {
     const handleLogOut = () => {
         localStorage.clear();
         navigate('/login');
-    }
+    };
+
+    const fetchReviewsByProduct = async (productId) => {
+        try {
+            const token = localStorage.getItem('token');
+
+            const response = await axios.get(`http://localhost:5001/api/review/product/${productId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            const reviews = response.data.reviews.map((review) => ({
+                id: review._id,
+                review: review.review,
+                customerName: review.customer?.user?.name || "Anonymous",
+            }));
+
+            setReviews(reviews);
+        } catch (error) {
+            console.error("Error fetching reviews:", error.response?.data || error.message);
+            showErrorToast("Failed to load product reviews.");
+            setReviews([]);
+        }
+    };
+
+
+    const addReview = async (productId, reviewText) => {
+        try {
+            const token = localStorage.getItem('token');
+
+            const response = await axios.post(
+                "http://localhost:5001/api/review",
+                {
+                    productId,
+                    review: reviewText
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+
+            const { success, message } = response.data;
+
+            if (success) {
+                showSuccessToast(message || "Review added!");
+                fetchReviewsByProduct(productId); // ✅ Refresh reviews after posting
+            }
+        } catch (error) {
+            console.error("Add review error:", error);
+            const errorMsg = error.response?.data?.message || "Failed to add review.";
+            showErrorToast(errorMsg);
+        }
+    };
+
+
 
     return (
         <StoreContext.Provider
@@ -237,7 +294,10 @@ const StoreContextProvider = ({ children }) => {
                 handleAddToCart,
                 updateCartHandler,
                 removeCartItem,
-                handleLogOut
+                handleLogOut,
+                reviews,
+                fetchReviewsByProduct,
+                addReview
             }}
         >
             {children}

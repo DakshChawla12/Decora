@@ -12,19 +12,19 @@ const Review = sequelize.define("Review", {
     customerId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: { model: Customer, key: "id" } // Ensure 'id' matches Customer model's primary key
+        references: { model: Customer, key: "id" }
     },
     productId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: { model: Product, key: "productId" } // Ensure 'id' matches Product model's primary key
+        references: { model: Product, key: "productId" }
     },
-    rating: { 
-        type: DataTypes.INTEGER, 
-        allowNull: false, 
-        validate: { min: 1, max: 5 } // Ensure rating is between 1 and 5
-    },
-    review: { type: DataTypes.TEXT }
-}, { timestamps: false });
+    review: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    }
+}, {
+    timestamps: false
+});
 
 module.exports = Review;
