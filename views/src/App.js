@@ -8,7 +8,7 @@ import LandingPage from "./pages/LandingPage";
 import ContactUsPage from "./pages/ContactUsPage";
 import SingleProductPage from "./pages/SingleProductPage";
 import CartPage from "./pages/CartPage";
-
+import ProtectedRoute from "./components/ProtectedRoute"; // ✅ Import the wrapper
 
 const App = () => {
     return (
@@ -19,7 +19,17 @@ const App = () => {
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/contact" element={<ContactUsPage />} />
-            <Route path="/single" element={<SingleProductPage />} />
+
+            {/* 🔒 Protected Route */}
+            <Route
+                path="/product/:id"
+                element={
+                    <ProtectedRoute>
+                        <SingleProductPage />
+                    </ProtectedRoute>
+                }
+            />
+
             <Route path="/cart" element={<CartPage />} />
         </Routes>
     );

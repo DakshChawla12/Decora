@@ -10,7 +10,7 @@ import { StoreContext } from "../Context/StoreContext";
 
 const NavBar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
-    const { handleNavigate } = useContext(StoreContext);
+    const { handleNavigate, handleLogOut } = useContext(StoreContext);
 
     return (
         <div className="w-[85%] mx-auto px-4 sm:px-6 lg:px-8 bg-white">
@@ -37,6 +37,7 @@ const NavBar = () => {
                     <img src={userIcon} className="h-5 w-5" alt="User" />
                     <img src={bagIcon} className="h-5 w-5" alt="Bag" />
                     <img src={cartItemsIcon} className="h-5 w-5" alt="Cart" onClick={() => handleNavigate('/cart')} />
+                    <button className="h-[2rem] w-[6rem] text-white bg-red-500 rounded-md" onClick={() => { handleLogOut() }}>Log out</button>
 
                     <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden">
                         {menuOpen ? (
