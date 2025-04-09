@@ -1,9 +1,9 @@
 import React from "react";
 
-import freeShippingIcon from "../assets/freeShippingIcon.png";
-import moneyBackIcon from "../assets/moneyBackIcon.png";
-import securePaymentIcon from "../assets/securePaymentIcon.png";
-import supportIcon from "../assets/supportIcon.png";
+import freeShippingIcon from "../assets/iconImages/shipping.svg";
+import moneyBackIcon from "../assets/iconImages/money.svg";
+import securePaymentIcon from "../assets/iconImages/lock.svg";
+import supportIcon from "../assets/iconImages/support.svg";
 
 const features = [
     {

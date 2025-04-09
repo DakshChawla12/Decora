@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { StoreContext } from "../Context/StoreContext";
-import newIcon from '../assets/iconImages/newIcon.png';
-import discountIcon from '../assets/iconImages/discountIcon.png';
+import newIcon from '../assets/iconImages/newbtn.svg';
+import discountIcon from '../assets/iconImages/discountgreen.svg';
 
 const ProductCard = ({ product }) => {
     const { handleNavigate, handleAddToCart } = useContext(StoreContext);

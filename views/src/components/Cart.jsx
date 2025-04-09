@@ -1,12 +1,10 @@
 import React, { useState, useContext } from "react";
 import { StoreContext } from "../Context/StoreContext";
+import { FiTag } from "react-icons/fi";
 
 const Cart = ({ cartItems }) => {
-
   const { updateCartHandler, removeCartItem } = useContext(StoreContext);
-
-  const [selectedShipping, setSelectedShipping] = useState("");
-
+  const [selectedShipping, setSelectedShipping] = useState("free");
 
   const getSubtotal = (price, quantity) => (price * quantity).toFixed(2);
 
@@ -16,12 +14,25 @@ const Cart = ({ cartItems }) => {
       .toFixed(2);
   };
 
+  const shippingOptions = [
+    { label: "Free shipping", value: "free", cost: 0, symbol: "$" },
+    { label: "Express shipping", value: "express", cost: 15, symbol: "$" },
+    { label: "Pick Up", value: "pickup", cost: 21, symbol: "$" },
+  ];
+
+  const getShippingCost = () => {
+    const option = shippingOptions.find((o) => o.value === selectedShipping);
+    return option ? option.cost : 0;
+  };
+
+  const subtotal = parseFloat(getTotal());
+  const total = (subtotal + getShippingCost()).toFixed(2);
+
   return (
     <div className="flex flex-col h-full w-full gap-20 py-20">
       {/* Title Section */}
       <div className="w-[58%] flex flex-col items-center mx-auto gap-8">
         <h1 className="text-6xl font-semibold">Cart</h1>
-        {/* Checkout Steps */}
         <div className="w-full flex justify-between items-center mx-auto">
           {["Shopping cart", "Checkout details", "Order complete"].map(
             (step, idx) => (
@@ -46,7 +57,6 @@ const Cart = ({ cartItems }) => {
           <div className="h-[59vh] w-[58%] overflow-y-auto">
             {cartItems.length > 0 ? (
               <>
-                {/* Header */}
                 <div className="flex justify-between text-lg font-semibold mb-6 border-b pb-6">
                   <p className="w-[40%]">Product</p>
                   <p className="w-[20%] text-center">Quantity</p>
@@ -54,13 +64,11 @@ const Cart = ({ cartItems }) => {
                   <p className="w-[15%] text-center">Subtotal</p>
                 </div>
 
-                {/* Products */}
                 {cartItems.map((item) => (
                   <div
                     key={item.id}
                     className="flex justify-between items-center w-full h-34 pb-6 mb-4 border-b border-b-gray-300"
                   >
-                    {/* Product Info */}
                     <div className="flex items-center w-[40%] h-full">
                       <img
                         src={item.product.images[0]}
@@ -80,7 +88,6 @@ const Cart = ({ cartItems }) => {
                       </div>
                     </div>
 
-                    {/* Quantity */}
                     <div className="flex items-center justify-center w-[20%]">
                       <button
                         className="w-8 h-8 border border-gray-400 text-xl rounded hover:bg-gray-200"
@@ -107,71 +114,86 @@ const Cart = ({ cartItems }) => {
                 ))}
               </>
             ) : (
-              <div className="h-[100%] w-[100%] flex items-center justify-center text-3xl font-medium text-gray-500">Your cart is empty.</div>
+              <div className="h-[100%] w-[100%] flex items-center justify-center text-3xl font-medium text-gray-500">
+                Your cart is empty.
+              </div>
             )}
           </div>
 
-          {/* Cart Summary */}
-          <div className="flex flex-col justify-evenly items-center h-[59vh] w-[36%] border border-1 rounded-md">
-            <h1 className="text-2xl w-[90%] font-semibold">Cart summary</h1>
-            {/* Shipping Options */}
-            <div className="flex flex-col w-[90%] gap-3">
-              {[
-                { label: "Free shipping", value: "free", cost: "$0" },
-                { label: "Express shipping", value: "express", cost: "$10" },
-                { label: "Pick Up", value: "pickup", cost: "$5" },
-              ].map((option) => (
-                <div
-                  key={option.value}
-                  className={`border p-3 rounded-sm flex items-center justify-between cursor-pointer transition ${selectedShipping === option.value ? "bg-gray-200" : ""
+          <div className="w-[36%]">
+            <div className="border-2 rounded-md p-6 border-gray-400 bg-white shadow-sm">
+              <h1 className="text-xl font-semibold mb-5">Cart summary</h1>
+
+              <div className="flex flex-col gap-3 mb-6">
+                {shippingOptions.map((option) => (
+                  <div
+                    key={option.value}
+                    className={`flex justify-between items-center border-2 rounded-sm px-4 py-3 cursor-pointer transition-all duration-200 ${
+                      selectedShipping === option.value
+                        ? "bg-gray-100 border-black"
+                        : "border-gray-400"
                     }`}
-                  onClick={() => setSelectedShipping(option.value)}
-                >
-                  <div className="flex items-center gap-2 text-[1.2rem]">
-                    <input
-                      type="radio"
-                      name="shipping"
-                      className="w-5 h-5 accent-black"
-                      checked={selectedShipping === option.value}
-                      onChange={() => setSelectedShipping(option.value)}
-                    />
-                    <label>{option.label}</label>
+                    onClick={() => setSelectedShipping(option.value)}
+                  >
+                    <div className="flex items-center gap-3 text-base">
+                      <input
+                        type="radio"
+                        name="shipping"
+                        className="accent-black w-5 h-5"
+                        checked={selectedShipping === option.value}
+                        onChange={() => setSelectedShipping(option.value)}
+                      />
+                      <label className="cursor-pointer">{option.label}</label>
+                    </div>
+                    <span className="font-medium">
+                      {option.symbol}
+                      {option.cost.toFixed(2)}
+                    </span>
                   </div>
-                  <span className="font-semibold text-[1.2rem]">
-                    {option.cost}
-                  </span>
+                ))}
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex justify-between text-sm">
+                  <span>Subtotal</span>
+                  <span className="font-semibold">${subtotal.toFixed(2)}</span>
                 </div>
-              ))}
-            </div>
 
-            <div className="w-[90%]">
-              <div className="flex justify-between">
-                <span>Subtotal</span>
-                <span>${getTotal()}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Total</span>
-                <span>${getTotal()}</span>
-              </div>
-            </div>
+                <hr className="border-t border-gray-300" />
 
-            <button
-              type="submit"
-              className="w-[90%] bg-black text-white text-xl py-3 rounded-lg hover:bg-gray-800 transition"
-            >
-              Checkout
-            </button>
+                <div className="flex justify-between text-lg font-semibold">
+                  <span>Total</span>
+                  <span>${total}</span>
+                </div>
+              </div>
+
+              <button className="mt-6 w-full bg-black text-white py-3 rounded-md text-lg font-medium hover:bg-gray-800 transition">
+                Checkout
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Coupon Section */}
-      <div className="flex flex-col items-start mx-auto w-[80%]">
-        <p>Have a coupon?</p>
-        <p>Add your code for an instant cart</p>
-        <div className="flex w-[20%] justify-between">
-          <p>Coupon Code</p>
-          <p>Apply</p>
+      <div className="flex flex-col items-start mx-auto w-[80%] space-y-2">
+        <p className="text-xl font-semibold text-gray-800">Have a coupon?</p>
+        <p className="text-lg text-gray-500">
+          Add your code for an instant cart discount
+        </p>
+
+        <div className="flex items-center w-full max-w-md border-2 border-gray-500 overflow-hidden">
+          <div className="p-4 text-gray-500">
+            <FiTag className="w-6 h-6" />
+          </div>
+          <input
+            type="text"
+            placeholder="Coupon Code"
+            className="flex-grow py-2 outline-none text-md placeholder-gray-500"
+          />
+          <button className="px-4 text-lg font-medium text-black hover:text-gray-600 transition">
+            Apply
+          </button>
         </div>
       </div>
     </div>
