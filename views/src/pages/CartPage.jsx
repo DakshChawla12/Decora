@@ -1,7 +1,6 @@
 import React, { useEffect, useContext } from 'react'
 import NavBar from '../components/Navbar'
 import Footer from '../components/Footer'
-import NewsLetterHeader from '../components/NewsLetterHeader'
 import Cart from '../components/Cart'
 import { StoreContext } from '../Context/StoreContext'
 

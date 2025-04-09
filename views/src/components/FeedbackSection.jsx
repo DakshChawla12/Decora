@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import locationDrop from "../assets/locationDrop.png";
+import locationDrop from "../assets/iconImages/location.svg";
 
 const FeedbackSection = () => {
     useEffect(() => {

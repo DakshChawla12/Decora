@@ -1,6 +1,6 @@
 import React from "react";
 import NewsLetterImage from "../assets/newsLetterImage.png";
-import NewsLetterIcon from "../assets/iconImages/newsLetterIcon.png";
+import NewsLetterIcon from "../assets/iconImages/mail.svg";
 
 const NewsLetterHeader = () => {
     return (

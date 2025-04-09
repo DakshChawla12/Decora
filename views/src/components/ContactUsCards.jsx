@@ -1,7 +1,7 @@
 import React from "react";
-import addressIcon from "../assets/addressIcon.png";
-import supportIcon from "../assets/supportIcon.png";
-import newsLetterIcon from "../assets/iconImages/newsLetterIcon.png";
+import addressIcon from "../assets/iconImages/address.svg";
+import supportIcon from "../assets/iconImages/support.svg";
+import newsLetterIcon from "../assets/iconImages/mail.svg";
 const contacts = [
     {
         id: 1,
