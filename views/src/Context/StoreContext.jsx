@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { showErrorToast, showSuccessToast } from '../utils/toatsUtils';
@@ -21,6 +21,10 @@ const StoreContextProvider = ({ children }) => {
     const handleNavigate = (path) => {
         navigate(path);
     };
+
+    useEffect(() => {
+        fetchAllProducts();
+    }, []);
 
     const fetchProducts = async () => {
         setLoadingProducts(true);
@@ -207,7 +211,10 @@ const StoreContextProvider = ({ children }) => {
         }
     };
 
-
+    const handleLogOut = () => {
+        localStorage.clear();
+        navigate('/login');
+    }
 
     return (
         <StoreContext.Provider
@@ -229,7 +236,8 @@ const StoreContextProvider = ({ children }) => {
                 cart,
                 handleAddToCart,
                 updateCartHandler,
-                removeCartItem
+                removeCartItem,
+                handleLogOut
             }}
         >
             {children}
