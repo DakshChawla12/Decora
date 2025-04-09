@@ -1,16 +1,16 @@
-const Review = require("../models/review");
+const {Review , Customer, User} = require('../models/associations');
 
 // Create a new review
 exports.create = async (req, res) => {
     try {
-        const { customerId, productId, rating, review } = req.body; // Explicitly extract fields
+        const customerId = req.user.id; // Authenticated user's ID
+        const { productId, review } = req.body;
 
-        // Validate required fields
-        if (!customerId || !productId || !rating) {
-            return res.status(400).json({ success: false, message: "Missing required fields." });
+        if (!productId) {
+            return res.status(400).json({ success: false, message: "Product ID is required." });
         }
 
-        const newReview = await Review.create({ customerId, productId, rating, review });
+        const newReview = await Review.create({ customerId, productId, review });
         res.status(201).json({ success: true, review: newReview });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
@@ -26,6 +26,39 @@ exports.findAll = async (req, res) => {
         res.status(400).json({ success: false, error: error.message });
     }
 };
+
+// Get all reviews for a specific product
+exports.getReviewsByProduct = async (req, res) => {
+    try {
+        const { productId } = req.params;
+
+        const reviews = await Review.findAll({
+            where: { productId },
+            include: [
+                {
+                    model: Customer,
+                    as: "customer",
+                    include: [
+                        {
+                            model: User,
+                            as: "user",
+                            attributes: ["name"], 
+                        },
+                    ],
+                },
+            ],
+        });
+
+        if (reviews.length === 0) {
+            return res.status(404).json({ success: false, message: "No reviews found for this product." });
+        }
+
+        res.status(200).json({ success: true, reviews });
+    } catch (error) {
+        res.status(400).json({ success: false, error: error.message });
+    }
+};
+
 
 // Get a review by ID
 exports.findOne = async (req, res) => {
@@ -44,7 +77,7 @@ exports.findOne = async (req, res) => {
 exports.update = async (req, res) => {
     try {
         const [updated] = await Review.update(req.body, {
-            where: { id: req.params.id }, // Fixed incorrect field name
+            where: { id: req.params.id },
         });
 
         if (updated === 0) {
@@ -62,7 +95,7 @@ exports.update = async (req, res) => {
 exports.deleteReview = async (req, res) => {
     try {
         const deleted = await Review.destroy({
-            where: { id: req.params.id }, // Fixed incorrect field name
+            where: { id: req.params.id },
         });
 
         if (!deleted) {
