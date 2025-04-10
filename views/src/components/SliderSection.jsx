@@ -8,17 +8,20 @@ import sliderImage1 from "../assets/landingPageImages/sliderImage1.png";
 import sliderImage2 from "../assets/landingPageImages/sliderImage2.png";
 
 const SliderSection = () => {
+  const images = [sliderImage1, sliderImage2];
+
   return (
-    <section className="">
-      <div className="w-full px-4 md:px-16 lg:px-38">
+    <section>
+      {/* Slider */}
+      <div className="w-full px-8 md:px-16 lg:px-38">
         <Swiper
           modules={[Navigation, Autoplay]}
           navigation
           autoplay={{ delay: 3000 }}
           loop
-          className="h-[300px] sm:h-[300px] md:h-[400px] lg:h-[600px]"
+          className="h-[19rem] sm:h-[300px] md:h-[400px] lg:h-[33.5rem]"
         >
-          {[sliderImage1, sliderImage2].map((img, idx) => (
+          {images.map((img, idx) => (
             <SwiperSlide key={idx}>
               <img
                 src={img}
@@ -30,15 +33,16 @@ const SliderSection = () => {
         </Swiper>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 px-4 sm:px-6 md:px-16 lg:px-38 py-7 md:py-8 sm:py-16">
-        <div className="text-start mx-auto md:text-left flex md:justify-center">
-          <h2 className="text-4xl sm:text-4xl md:text-7xl font-bold text-gray-800 leading-snug">
+      {/* Tagline & Description */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 px-8 md:px-16 lg:px-38 py-6 sm:py-16 md:py-8 lg:py-15">
+        <div className="flex items-start md:items-center">
+          <h2 className="text-[2.5rem] sm:text-4xl md:text-7xl lg:text-[4.5rem] font-medium text-gray-800 leading-11 lg:leading-tight">
             Simply Unique/<br />
             Simply Better.
           </h2>
         </div>
 
-        <div className="text-base sm:text-lg text-gray-600 max-w-xl mx-auto md:mx-auto md:my-auto text-center md:text-left">
+        <div className="text-[0.875rem] sm:text-lg text-gray-600 max-w-xl mx-auto md:mx-0 md:my-auto">
           <span className="text-black font-bold">Decora</span> is a modern home
           decor brand based in Patiala, India — committed to turning houses into
           homes. With carefully selected pieces that combine elegance and

@@ -1,36 +1,50 @@
 import React from "react";
-import bannerSectionImage from "../assets/landingPageImages/bannerSection.png";
 import { Link } from "react-router-dom";
+import bannerSectionImage from "../assets/landingPageImages/bannerSection.png";
 import rightArrow from "../assets/rightArrow.png";
 
 const BannerSection = () => {
-    return (
-        <div className="flex flex-col sm:flex-row h-[400px] sm:h-[450px] w-full bg-gray-50">
-            <div className="h-1/2 sm:h-full w-full sm:w-1/2">
-                <img src={bannerSectionImage} alt="Left" className="w-full h-full object-cover" />
-            </div>
+  return (
+    <div className="flex flex-col sm:flex-row w-full bg-gray-100 items-center">
+      {/* Left Image */}
+      <div className="h-[23rem] sm:h-full w-full sm:w-1/2">
+        <img
+          src={bannerSectionImage}
+          alt="Banner"
+          className="w-full h-full object-cover"
+        />
+      </div>
 
-            <div className="h-1/2 sm:h-full w-full sm:w-1/2 bg-white flex flex-col justify-center px-6 sm:px-[4rem]">
-                <div className="w-full sm:w-[65%] flex flex-col gap-3">
-                    <h2 className="text-xl md:text-2xl font-bold text-blue-400">
-                        SALE UP T0 50% OFF
-                    </h2>
-                    <p className="font-semibold text-3xl">HUNDREDS of NEW lower prices!</p>
-                    <p className="text-base">
-                        It’s more affordable than ever to give every room in your home a stylish
-                        makeover
-                    </p>
-                    <Link
-                        to="/products"
-                        className="flex items-center md:text-lg font-medium underline transition text-gray-800"
-                    >
-                        More Products
-                        <img src={rightArrow} alt="arrow" className="w-5 h-5 md:w-6 md:h-6 ml-1" />
-                    </Link>
-                </div>
-            </div>
+      {/* Right Text Content */}
+      <div className="w-full sm:w-1/2 h-[23rem] sm:h-full flex items-center p-8 sm:px-16 lg:px-20">
+        <div className="w-full sm:w-[80%] flex flex-col gap-3">
+          <h2 className="text-sm lg:text-base font-bold text-blue-500">
+            SALE UP TO 35% OFF
+          </h2>
+          <p className="text-3xl lg:text-[2.5rem] font-semibold leading-tight">
+            HUNDREDS of
+            <br />
+            New lower prices!
+          </p>
+          <p className="text-base lg:text-lg text-gray-700">
+            It’s more affordable than ever to give every room in your home a
+            stylish makeover
+          </p>
+          <Link
+            to="/products"
+            className="inline-flex items-center text-sm font-medium text-gray-800 border-b-2 w-fit hover:text-black transition"
+          >
+            <span>Shop Now</span>
+            <img
+              src={rightArrow}
+              alt="Arrow"
+              className="w-5 h-5 md:w-6 md:h-6 ml-1"
+            />
+          </Link>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default BannerSection;

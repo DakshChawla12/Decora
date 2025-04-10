@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import "./App.css";
-import ProductsPage from "./pages/ProductsPage";
+import ShopPage from "./pages/ShopPage";
 import BlogPage from "./pages/BlogPage";
 import LandingPage from "./pages/LandingPage";
 import ContactUsPage from "./pages/ContactUsPage";
@@ -17,9 +17,11 @@ const App = () => {
             <Route path="/" element={<LandingPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/products" element={<ProductsPage />} />
+            <Route path="/shop" element={<ShopPage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/contact" element={<ContactUsPage />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/admin" element={<AdminPage />} />
 
             {/* 🔒 Protected Route */}
             <Route
@@ -30,10 +32,6 @@ const App = () => {
                     </ProtectedRoute>
                 }
             />
-
-            <Route path="/cart" element={<CartPage />} />
-
-            <Route path="/admin" element={<AdminPage />} />
         </Routes>
     );
 };
