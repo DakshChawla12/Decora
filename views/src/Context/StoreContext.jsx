@@ -20,6 +20,8 @@ const StoreContextProvider = ({ children }) => {
     const [categories, setCategories] = useState([]);
     const [orders, setOrders] = useState([]);
     const [customerOrders, setCustomerOrders] = useState([]);
+    const [employees, setEmployees] = useState([]);
+    const [users, setUsers] = useState([]);
 
     const navigate = useNavigate();
 
@@ -751,6 +753,102 @@ const StoreContextProvider = ({ children }) => {
         }
     };
 
+    const getAllEmployees = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(
+                `http://localhost:5001/api/employee`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            const { success, employees } = response.data;
+            if (success) {
+                setEmployees(employees);
+            } else {
+                showErrorToast("Failed to fetch employees");
+            }
+        } catch (error) {
+            console.error("Error fetching employees:", error);
+            showErrorToast("Something went wrong while fetching employees");
+        }
+    };
+
+    const createEmployee = async (data) => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.post(
+                "http://localhost:5001/api/employee",
+                data,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            if (response.data && response.data.success) {
+                setEmployees(response.data.employees); // Assuming response returns updated list
+                showSuccessToast("Employee created");
+            } else {
+                console.error("Failed to create employee:", response.data);
+                showErrorToast("Failed to create employee");
+            }
+        } catch (error) {
+            showErrorToast("Error creating employee");
+            console.error("Error:", error.message);
+        }
+    };
+
+    const deleteEmployee = async (id) => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.delete(
+                `http://localhost:5001/api/employee/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            if (response.data && response.data.success) {
+                setEmployees(response.data.employees);
+                showSuccessToast("Employee deleted");
+            } else {
+                showErrorToast("Failed to delete employee");
+            }
+        } catch (error) {
+            console.error("Error deleting employee:", error);
+            showErrorToast("Something went wrong");
+        }
+    };
+
+    const getAllUsers = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(
+                `http://localhost:5001/api/user`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            const { success, users } = response.data;
+            if (success) {
+                setUsers(users);
+            } else {
+                showErrorToast("Failed to fetch users");
+            }
+        } catch (error) {
+            console.error("Error fetching users:", error);
+            showErrorToast("Something went wrong while fetching users");
+        }
+    }
+
 
     return (
         <StoreContext.Provider
@@ -803,7 +901,13 @@ const StoreContextProvider = ({ children }) => {
                 updateOrder,
                 handleAddProduct,
                 handleDelete,
-                handleUpdate
+                handleUpdate,
+                employees,
+                getAllEmployees,
+                createEmployee,
+                deleteEmployee,
+                getAllUsers,
+                users
             }}
         >
             {children}

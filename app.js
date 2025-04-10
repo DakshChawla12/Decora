@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const { connectDB } = require("./config/database");
 const syncDatabase = require("./config/syncDatabase");
-const session = require('express-session');
+const { graphqlHTTP } = require('express-graphql');
 const cors = require('cors');
 
 const app = express();
@@ -35,6 +35,9 @@ const paymentRoutes = require("./routes/paymentRoutes");
 const subscriptionRoutes = require("./routes/subscriptionRoutes");
 const wishListRoutes = require("./routes/wishlistRoutes");
 
+// *** GraphQl Imports *** //
+const schema = require('./graphql/schema/schema');
+
 // *** Setting the routers *** //
 app.use("/api/cart", cartRoutes);
 app.use("/api/discount", discountRoutes);
@@ -59,9 +62,16 @@ app.use("/api/brand", brandRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/review", reviewRoutes);
 
+app.use(
+    "/graphql",
+    graphqlHTTP({
+        schema: schema,
+        graphiql: true, // Enables GraphiQL interface for testing
+    })
+);
 // *** Connect to database first and sync tables ***
 connectDB()
-    .then(() => syncDatabase()) // ✅ Correct way to call the function
+    .then(() => syncDatabase()) 
     .then(() => {
         console.log("✅ Database synced");
         const PORT = process.env.PORT || 5001;
