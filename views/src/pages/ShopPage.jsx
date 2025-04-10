@@ -6,7 +6,7 @@ import ProductListing from "../components/ProductListing";
 import NewsLetterHeader from "../components/NewsLetterHeader";
 import Footer from "../components/Footer";
 
-const ProductsPage = () => {
+const ShopPage = () => {
     return (
         <div className="h-[100%] w-[100%]">
             <NotificationBar />
@@ -19,4 +19,4 @@ const ProductsPage = () => {
     );
 };
 
-export default ProductsPage;
+export default ShopPage;

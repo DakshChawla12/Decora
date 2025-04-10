@@ -33,7 +33,7 @@ const ProductListing = () => {
     if (productsError) return <div>{productsError}</div>;
 
     return (
-        <div className="w-full px-4 md:px-16 lg:px-28 py-10">
+        <div className="w-full px-4 md:px-16 lg:px-38 py-10">
             {/* Filter Section */}
             <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <select
