@@ -9,6 +9,7 @@ import ContactUsPage from "./pages/ContactUsPage";
 import SingleProductPage from "./pages/SingleProductPage";
 import CartPage from "./pages/CartPage";
 import ProtectedRoute from "./components/ProtectedRoute"; // ✅ Import the wrapper
+import AdminPage from "./pages/AdminPage";
 
 const App = () => {
     return (
@@ -31,6 +32,8 @@ const App = () => {
             />
 
             <Route path="/cart" element={<CartPage />} />
+
+            <Route path="/admin" element={<AdminPage />} />
         </Routes>
     );
 };
