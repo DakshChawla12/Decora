@@ -1,4 +1,4 @@
-const Country = require("../models/country");
+const Country = require("../models/associations");
 
 // Create a new country
 exports.create = async (req, res) => {

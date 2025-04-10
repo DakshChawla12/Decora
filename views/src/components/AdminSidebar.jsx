@@ -65,6 +65,16 @@ const AdminSidebar = ({ onSelectSection }) => {
                     label="Category"
                     onClick={() => onSelectSection("Category")}
                 />
+                <SidebarItem
+                    icon={<FaThLarge />}
+                    label="Country"
+                    onClick={() => onSelectSection("Country")}
+                />
+                <SidebarItem
+                    icon={<FaThLarge />}
+                    label="Discount Codes"
+                    onClick={() => onSelectSection("Discount")}
+                />
             </nav>
         </div>
     );

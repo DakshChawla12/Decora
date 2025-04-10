@@ -9,6 +9,8 @@ import BrandList from "../components/BrandList";
 import CategoryList from "../components/CategoryList";
 import DepartmentList from "../components/DepartmentList";
 import SalesDashboard from "../components/SalesDashboard";
+import CountryList from "../components/CountryList";
+import DiscountList from "../components/DiscountList";
 
 const AdminPage = () => {
     const [selectedSection, setSelectedSection] = useState("Dashboard");
@@ -32,6 +34,10 @@ const AdminPage = () => {
                 return <BrandList />;
             case "Category":
                 return <CategoryList />;
+            case "Country":
+                return <CountryList />
+            case "Discount":
+                return <DiscountList />
             default:
                 return <div className="p-6">Select a section</div>;
         }
