@@ -4,7 +4,8 @@ const {Category} = require("../models/associations");
 exports.create = async (req, res) => {
   try {
     const category = await Category.create({ name: req.body.name });
-    res.status(201).json({ success: true, category });
+    const categories = await Category.findAll();
+    res.status(201).json({ success: true, categories });
   } catch (error) {
     if (error.name === "SequelizeValidationError") {
       return res.status(400).json({ success: false, error: "Validation error: " + error.message });
@@ -49,7 +50,8 @@ exports.update = async (req, res) => {
     }
 
     const updatedCategory = await Category.findByPk(req.params.id);
-    res.status(200).json({ success: true, updatedCategory });
+    const categories = await Category.findAll();
+    res.status(200).json({ success: true, categories });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -63,8 +65,8 @@ exports.deleteCategory = async (req, res) => {
     if (!deleted) {
       return res.status(404).json({ success: false, message: "Category not found" });
     }
-
-    res.status(200).json({ success: true, message: "Category deleted" });
+    const categories = await Category.findAll();
+    res.status(200).json({ success: true, message: "Category deleted",categories });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }

@@ -4,7 +4,8 @@ const Designation = require("../models/designation");
 exports.create = async (req, res) => {
     try {
         const designation = await Designation.create({ title: req.body.title }); // Fixed field name
-        res.status(201).json({ success: true, designation });
+        const designations = await Designation.findAll();
+        res.status(201).json({ success: true, designations });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
@@ -48,7 +49,8 @@ exports.update = async (req, res) => {
         }
 
         const updatedDesignation = await Designation.findByPk(req.params.id);
-        res.status(200).json({ success: true, updatedDesignation });
+        const designations = await Designation.findAll();
+        res.status(200).json({ success: true, designations });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
     }
@@ -62,8 +64,8 @@ exports.deleteDesignation = async (req, res) => {
         if (!deleted) {
             return res.status(404).json({ success: false, message: "Designation not found!" });
         }
-
-        res.status(200).json({ success: true, message: "Designation deleted!" });
+        const designations = await Designation.findAll();
+        res.status(200).json({ success: true, message: "Designation deleted!",designations });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
     }
