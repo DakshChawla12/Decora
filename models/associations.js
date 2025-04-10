@@ -108,16 +108,26 @@ Cart.belongsTo(Customer, { foreignKey: "customerId", as: "customer" });
 Product.hasMany(Wishlist, { foreignKey: "productId", as: "wishlistItems" });
 Wishlist.belongsTo(Product, { foreignKey: "productId", as: "product" });
 
-// Product & Cart Relationship
-Product.hasMany(Cart, { foreignKey: "productId", as: "carts" });
+// ✅ Product & Cart Relationship with cascade delete
+Product.hasMany(Cart, {
+  foreignKey: "productId",
+  as: "carts",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE"
+});
 Cart.belongsTo(Product, { foreignKey: "productId", as: "product" });
 
 // Discount & Order Relationship
 Discount.hasMany(Order, { foreignKey: "discountId", as: "orders" });
 Order.belongsTo(Discount, { foreignKey: "discountId", as: "discount" });
 
-// Product & Review Relationship
-Product.hasMany(Review, { foreignKey: "productId", as: "reviews" });
+// ✅ Product & Review Relationship with cascade delete
+Product.hasMany(Review, {
+  foreignKey: "productId",
+  as: "reviews",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE"
+});
 Review.belongsTo(Product, { foreignKey: "productId", as: "product" });
 
 // Customer & Review Relationship

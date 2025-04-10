@@ -1,12 +1,33 @@
 const { Product, Category, Brand } = require('../models/associations');
-const { Op } = require("sequelize");
+const { Op, INTEGER } = require("sequelize");
 
 // Create a new product
 exports.create = async (req, res) => {
     try {
-        const product = await Product.create(req.body);
-        res.status(201).json({ success: true, product });
+        const { name, description, price, stock, brandId, categoryId } = req.body;
+
+        // req.files already contains Cloudinary metadata
+        const imageUrls = req.files.map(file => file.path); // file.path is the URL
+
+        const product = await Product.create({
+            name,
+            description,
+            price,
+            stock,
+            brandId: brandId || null,
+            categoryId: categoryId || null,
+            images: imageUrls
+        });
+        const products = await Product.findAll({
+                    include: [
+                        { model: Category, as: 'category' },
+                        { model: Brand, as: 'brand' }
+                    ]
+                });
+        res.status(201).json({ success: true, products });
+
     } catch (error) {
+        console.error("Error creating product:", error);
         res.status(400).json({ success: false, error: error.message });
     }
 };
@@ -63,8 +84,14 @@ exports.update = async (req, res) => {
                 { model: Brand, as: 'brand' }
             ]
         });
+        const products = await Product.findAll({
+            include: [
+                { model: Category, as: 'category' },
+                { model: Brand, as: 'brand' }
+            ]
+        });
 
-        res.status(200).json({ success: true, updatedProduct });
+        res.status(200).json({ success: true, products });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
@@ -73,15 +100,28 @@ exports.update = async (req, res) => {
 // Delete a product by ID
 exports.deleteProduct = async (req, res) => {
     try {
+        const id = parseInt(req.params.id);
+        console.log("User:", req.user); // may be undefined if token is wrong
+        console.log("Deleting product with ID:", req.params.id);
+        console.log("params", req.params);
+
         const deleted = await Product.destroy({
-            where: { productId: req.params.id },
+            where: { productId: id },
         });
 
         if (!deleted) {
             return res.status(404).json({ success: false, message: "Product not found!" });
         }
 
-        res.status(200).json({ success: true, message: "Product deleted successfully!" });
+
+        const products = await Product.findAll({
+            include: [
+                { model: Category, as: 'category' },
+                { model: Brand, as: 'brand' }
+            ]
+        });
+
+        res.status(200).json({ success: true, message: "Product deleted successfully!", products });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }

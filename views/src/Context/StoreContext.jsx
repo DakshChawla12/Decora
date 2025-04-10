@@ -14,6 +14,12 @@ const StoreContextProvider = ({ children }) => {
     const [filterPrice, setFilterPrice] = useState("All Prices");
     const [user, setUser] = useState(null);
     const [reviews, setReviews] = useState([]);
+    const [departments, setDepartments] = useState([]);
+    const [designations, setDesignations] = useState([]);
+    const [brands, setBrands] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [orders, setOrders] = useState([]);
+    const [customerOrders, setCustomerOrders] = useState([]);
 
     const navigate = useNavigate();
 
@@ -271,6 +277,479 @@ const StoreContextProvider = ({ children }) => {
         }
     };
 
+    {/** Department */ }
+    const getAllDepartments = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(
+                `http://localhost:5001/api/department`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            const { success, departments } = response.data;
+            if (success) {
+                setDepartments(departments);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const createDepartment = async (name) => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.post(
+                "http://localhost:5001/api/department",
+                { name },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            // ✅ Make sure response.data exists
+            if (response.data && response.data.success) {
+                setDepartments(response.data.departments); // or whatever your setter is
+                showSuccessToast("Department Created");
+            } else {
+                console.error("Failed to create department:", response.data);
+                showErrorToast("Failed to create department");
+            }
+        } catch (error) {
+            showErrorToast("Failed to create department");
+            console.error("Error creating department:", error.message);
+        }
+    };
+
+    const updateDepartment = async (id, name) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.patch(`http://localhost:5001/api/department/${id}`, { name }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            if (response.data && response.data.success) {
+                setDepartments(response.data.departments); // or whatever your setter is
+                showSuccessToast("Department Updated");
+            } else {
+                console.error("Failed to update department:", response.data);
+                showErrorToast("Failed to update department");
+            }
+        } catch (error) {
+            showErrorToast("Failed to update department");
+            console.log(error);
+        }
+    };
+
+    const deleteDepartment = async (id) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.delete(
+                `http://localhost:5001/api/department/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            if (response.data && response.data.success) {
+                setDepartments(response.data.departments); // or whatever your setter is
+                showSuccessToast("Department deleted");
+            } else {
+                console.error("Failed to deleted department:", response.data);
+                showErrorToast("Failed to deleted department");
+            }
+        } catch (err) {
+            showErrorToast("Failed to delete department");
+            console.log(err);
+        }
+    };
+
+    {/** Designation */ }
+    const getAllDesignations = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(
+                `http://localhost:5001/api/designation`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            if (response.data && response.data.success) {
+                setDesignations(response.data.designations);
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const createDesignation = async (title) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.post(
+                `http://localhost:5001/api/designation`,
+                { title },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            if (response.data && response.data.success) {
+                setDesignations(response.data.designations);
+                showSuccessToast("Designation Created");
+            }
+        } catch (err) {
+            showErrorToast("Failed to add designation");
+            console.log(err);
+        }
+    };
+
+    const deleteDesignation = async (id) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.delete(
+                `http://localhost:5001/api/designation/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            if (response.data && response.data.success) {
+                setDesignations(response.data.designations);
+                showSuccessToast("Designation deleted");
+            }
+        } catch (err) {
+            showErrorToast("Failed to delete designation");
+            console.log(err);
+        }
+    };
+
+    const updateDesignation = async (id, title) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.patch(
+                `http://localhost:5001/api/designation/${id}`,
+                { title },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            if (response.data && response.data.success) {
+                setDesignations(response.data.designations);
+                showSuccessToast("Designation Updated");
+            }
+        } catch (error) {
+            showErrorToast("Failed to update designation");
+            console.log(error);
+        }
+    };
+
+    const getAllBrands = async () => {
+        try {
+            const response = await axios.get(`http://localhost:5001/api/brand`);
+            if (response.data && response.data.success) {
+                setBrands(response.data.brands);
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const createBrand = async (brandName) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.post(
+                `http://localhost:5001/api/brand`,
+                { brandName },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            if (response.data && response.data.success) {
+                setBrands(response.data.brands);
+                showSuccessToast("Brand Created");
+            }
+        } catch (err) {
+            showErrorToast("Failed to add brand");
+            console.log(err);
+        }
+    };
+
+    const deleteBrand = async (id) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.delete(
+                `http://localhost:5001/api/brand/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            if (response.data && response.data.success) {
+                setBrands(response.data.brands);
+                showSuccessToast("Brand deleted");
+            }
+        } catch (err) {
+            showErrorToast("Failed to delete brand");
+            console.log(err);
+        }
+    };
+
+    const updateBrand = async (id, brandName) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.patch(
+                `http://localhost:5001/api/brand/${id}`,
+                { brandName },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            if (response.data && response.data.success) {
+                setBrands(response.data.brands);
+                showSuccessToast("Brand Updated");
+            }
+        } catch (error) {
+            showErrorToast("Failed to update brand");
+            console.log(error);
+        }
+    };
+
+    const getAllCategories = async () => {
+        try {
+            const response = await axios.get(`http://localhost:5001/api/category`);
+            if (response.data && response.data.success) {
+                setCategories(response.data.categories);
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const createCategory = async (name) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.post(
+                `http://localhost:5001/api/category`,
+                { name },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            if (response.data && response.data.success) {
+                setCategories(response.data.categories);
+                showSuccessToast("Category Created");
+            }
+        } catch (err) {
+            showErrorToast("Failed to add category");
+            console.log(err);
+        }
+    };
+
+    const deleteCategory = async (id) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.delete(
+                `http://localhost:5001/api/category/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            if (response.data && response.data.success) {
+                setCategories(response.data.categories);
+                showSuccessToast("Category deleted");
+            }
+        } catch (err) {
+            showErrorToast("Failed to delete category");
+            console.log(err);
+        }
+    };
+
+    const updateCategory = async (id, name) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.patch(
+                `http://localhost:5001/api/category/${id}`,
+                { name },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            if (response.data && response.data.success) {
+                setCategories(response.data.categories);
+                showSuccessToast("Category Updated");
+            }
+        } catch (err) {
+            showErrorToast("Failed to update category");
+            console.log(err);
+        }
+    };
+
+    // Get all orders (admin only)
+    const getAllOrders = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.get(`http://localhost:5001/api/order/admin/all`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (response.data && response.data.success) {
+                setOrders(response.data.orders);
+            }
+        } catch (err) {
+            console.error("Failed to fetch orders:", err);
+        }
+    };
+
+    const createOrder = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.post(
+                `http://localhost:5001/api/order`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            if (response.data && response.data.success) {
+                setOrders(response.data.orders);
+            }
+        } catch (err) {
+            console.error("Failed to create order:", err);
+        }
+    };
+
+    const updateOrder = async (id, status) => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.put(
+                `http://localhost:5001/api/order/${id}`,
+                { status },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            if (response.data && response.data.success) {
+                setOrders(response.data.orders);
+                showSuccessToast("Status Updated");
+            }
+        } catch (err) {
+            showErrorToast("Failed to update status");
+            console.error("Failed to update order:", err);
+        }
+    };
+
+    const getCustomerOrders = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.get(`http://localhost:5001/api/order`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (response.data && response.data.success) {
+                setCustomerOrders(response.data.orders);
+            }
+        } catch (err) {
+            console.error("Failed to fetch customer orders:", err);
+        }
+    };
+
+    const handleAddProduct = async (productData) => {
+        try {
+            console.log(productData);
+            const token = localStorage.getItem('token');
+            const response = await axios.post(
+                `http://localhost:5001/api/product`,
+                productData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            if (response.data && response.data.success) {
+                showSuccessToast("Product created");
+                setProducts(response.data.products);
+            }
+        } catch (err) {
+            showErrorToast("Failed to add product");
+            console.error(err);
+        }
+    };
+
+    const handleUpdate = async (id, updatedData) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.patch(
+                `http://localhost:5001/api/product/${id}`,
+                updatedData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            if (response.data && response.data.success) {
+                showSuccessToast("Product updated");
+                setProducts(response.data.products);
+            }
+        } catch (error) {
+            showErrorToast("Failed to update product");
+            console.error(error);
+        }
+    };
+
+    const handleDelete = async (id) => {
+        try {
+            console.log("Deleting product with ID:", id);
+
+            const token = localStorage.getItem('token');
+            const response = await axios.delete(
+                `http://localhost:5001/api/product/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            if (response.data && response.data.success) {
+                showSuccessToast("Product deleted");
+                setProducts(response.data.products);
+            }
+        } catch (err) {
+            showErrorToast("Failed to delete product");
+            console.error(err);
+        }
+    };
 
 
     return (
@@ -297,7 +776,34 @@ const StoreContextProvider = ({ children }) => {
                 handleLogOut,
                 reviews,
                 fetchReviewsByProduct,
-                addReview
+                addReview,
+                getAllDepartments,
+                departments,
+                createDepartment,
+                updateDepartment,
+                deleteDepartment,
+                getAllDesignations,
+                designations,
+                createDesignation,
+                deleteDesignation,
+                updateDesignation,
+                brands,
+                getAllBrands,
+                deleteBrand,
+                updateBrand,
+                createBrand,
+                categories,
+                createCategory,
+                getAllCategories,
+                updateCategory,
+                deleteCategory,
+                orders,
+                getAllOrders,
+                createOrder,
+                updateOrder,
+                handleAddProduct,
+                handleDelete,
+                handleUpdate
             }}
         >
             {children}
