@@ -10,6 +10,7 @@ import SingleProductPage from "./pages/SingleProductPage";
 import CartPage from "./pages/CartPage";
 import ProtectedRoute from "./components/ProtectedRoute"; // ✅ Import the wrapper
 import AdminPage from "./pages/AdminPage";
+import ProfilePage from "./pages/ProfilePage";
 
 const App = () => {
     return (
@@ -22,6 +23,7 @@ const App = () => {
             <Route path="/contact" element={<ContactUsPage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/admin" element={<AdminPage />} />
+            <Route path="/profile" element={<ProfilePage/>} />
 
             {/* 🔒 Protected Route */}
             <Route
