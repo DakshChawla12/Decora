@@ -39,7 +39,7 @@ const ProductCarousel = () => {
         {/* Link */}
         <div className="flex items-center">
           <Link
-            to="/products"
+            to="/shop"
             className="flex items-center md:text-lg font-medium border-b-2 transition text-gray-800"
           >
             More Products
