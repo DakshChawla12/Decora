@@ -4,52 +4,59 @@ const { Order, OrderItem, Cart, Product, Customer, User } = require('../models/a
 const createOrder = async (req, res) => {
     try {
         const customerId = req.user.customerId;
+        const { totalAmount } = req.body;
 
+        // Validate totalAmount
+        if (totalAmount == null || isNaN(totalAmount) || totalAmount < 0) {
+            return res.status(400).json({ success: false, message: 'Invalid total amount' });
+        }
+
+        // Fetch cart items
         const cartItems = await Cart.findAll({
             where: { customerId },
-            include: [{ model: Product, as: 'product' }]
+            include: [{ model: Product, as: 'product' }],
         });
 
         if (!cartItems.length) {
             return res.status(400).json({ success: false, message: 'Your cart is empty' });
         }
 
-        const totalAmount = cartItems.reduce((total, item) => {
-            return total + (item.product.price * item.quantity);
-        }, 0);
-
+        // Create order with provided totalAmount
         const order = await Order.create({
             customerId,
-            totalAmount,
+            totalAmount, // Use the frontend-provided total (subtotal - discount + shipping)
             status: 'Pending',
         });
 
-        const orderItemsData = cartItems.map(item => ({
+        // Create order items
+        const orderItemsData = cartItems.map((item) => ({
             orderId: order.id,
             productId: item.productId,
             quantity: item.quantity,
         }));
 
         await OrderItem.bulkCreate(orderItemsData);
+
+        // Clear cart
         await Cart.destroy({ where: { customerId } });
 
-        // ✅ Fetch all orders of the customer after placing new order
+        // Fetch all orders for the customer
         const orders = await Order.findAll({
             where: { customerId },
             include: [
                 {
                     model: OrderItem,
                     as: 'orderItems',
-                    include: [{ model: Product, as: 'product' }]
-                }
-            ]
+                    include: [{ model: Product, as: 'product' }],
+                },
+            ],
         });
 
         res.status(201).json({
             success: true,
             message: 'Order placed successfully',
             orderId: order.id,
-            orders
+            orders,
         });
     } catch (error) {
         console.error('Error creating order:', error.message);
