@@ -33,7 +33,7 @@ const CountryType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
     name: "RootQueryType",
     fields: {
-        // Discount Queries
+        // Existing queries...
         discounts: {
             type: new GraphQLList(DiscountType),
             resolve() {
@@ -47,7 +47,15 @@ const RootQuery = new GraphQLObjectType({
                 return Discount.findByPk(args.id);
             },
         },
-        // Country Queries
+        // New query to validate coupon code
+        validateCoupon: {
+            type: DiscountType,
+            args: { code: { type: new GraphQLNonNull(GraphQLString) } },
+            resolve(parent, args) {
+                return Discount.findOne({ where: { code: args.code } });
+            },
+        },
+        // Other queries...
         countries: {
             type: new GraphQLList(CountryType),
             resolve() {
