@@ -4,7 +4,7 @@ import NewsLetterIcon from "../assets/iconImages/mail.svg";
 
 const NewsLetterHeader = () => {
   return (
-    <div className="relative h-[22.5rem] md:h-auto">
+    <div className="relative h-[22.5rem] md:h-auto bg-gray-100">
       {/* Background Image for desktop */}
       <img
         src={NewsLetterImage}

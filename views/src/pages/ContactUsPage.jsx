@@ -7,8 +7,6 @@ import FeedbackSection from "../components/FeedbackSection";
 import FeatureCards from "../components/FeatureCards";
 import Footer from '../components/Footer'
 
-
-
 const ContactUsPage = () => {
     return (
         <div className="w-[100%] h-[100%]">

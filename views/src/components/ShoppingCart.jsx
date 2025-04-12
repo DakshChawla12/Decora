@@ -134,16 +134,16 @@ const ShoppingCart = ({
 
   return (
     <div className="flex flex-col items-center">
-      <div className="flex w-[80%] justify-between mx-auto">
+      <div className="flex flex-col lg:flex-row w-[80%] justify-between mx-auto">
         {/* Product List */}
-        <div className="h-[59vh] w-[58%] overflow-y-auto">
+        <div className="h-[59vh] w-full lg:w-[58%] overflow-y-auto">
           {cartItems.length > 0 ? (
             <>
               <div className="flex justify-between text-lg font-semibold mb-6 border-b pb-6">
                 <p className="w-[40%]">Product</p>
-                <p className="w-[20%] text-center">Quantity</p>
-                <p className="w-[15%] text-center">Price</p>
-                <p className="w-[15%] text-center">Subtotal</p>
+                <p className="w-[20%] hidden lg:block text-center">Quantity</p>
+                <p className="w-[15%] hidden lg:block text-center">Price</p>
+                <p className="w-[15%] hidden lg:block text-center">Subtotal</p>
               </div>
 
               {cartItems.map((item) => (

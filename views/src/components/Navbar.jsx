@@ -23,14 +23,14 @@ const NavBar = () => {
         <div className="hidden lg:flex space-x-8 text-sm font-medium text-gray-500">
           <Link to="/" className="text-black">Home</Link>
           <Link to="/shop">Shop</Link>
-          <Link to="/products">Product</Link>
+          <Link to="/blog">Blog</Link>
           <Link to="/contact">Contact Us</Link>
         </div>
 
         <div className="flex items-center space-x-4">
           <div className="lg:w-full mx-auto hidden md:flex items-center lg:justify-between space-x-4">
             <SearchIcon className="cursor-pointer w-5 h-5" />
-            <UserIcon className="cursor-pointer w-5 h-5" />
+            <UserIcon className="cursor-pointer w-5 h-5" onClick={() => handleNavigate("/profile")} />
 
             <div className="relative cursor-pointer" onClick={() => handleNavigate("/cart")}>
               <BagIcon className="w-5 h-5" />

@@ -25,8 +25,8 @@ const contacts = [
 
 const ContactUsCards = () => {
     return (
-        <section className="px-4 sm:px-6 lg:px-8 w-[85%] mx-auto py-8">
-            <div className="text-xl sm:text-2xl md:text-4xl text-center font-semibold py-6">
+        <section className="px-8 sm:px-6 lg:px-38 w-full py-8">
+            <div className="text-xl sm:text-2xl md:text-4xl text-center font-semibold pb-8">
                 Contact Us
             </div>
 
