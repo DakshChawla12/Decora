@@ -14,7 +14,14 @@ const SingleProductPage = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const res = await axios.get(`http://localhost:5001/api/product/${id}`);
+                const token = localStorage.getItem('token');
+                const res = await axios.get(
+                    `http://localhost:5001/api/product/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
                 setProduct(res.data.product); // Adjust based on API structure
                 setLoading(false);
             } catch (err) {

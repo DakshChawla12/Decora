@@ -19,7 +19,7 @@ const ProductCarousel = () => {
         </div>
 
         {/* Horizontal scrollable product cards */}
-        <div className=" overflow-x-auto scrollbar-hidden">
+        <div className=" overflow-x-auto scrollbar">
           <div className="flex h-[24.5rem] gap-8 min-w-max">
             {products.slice(0, 7).map((product) => (
               <ProductCard key={product.productId} product={product} />

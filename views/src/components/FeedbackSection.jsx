@@ -37,31 +37,30 @@ const FeedbackSection = () => {
     }, []);
 
     return (
-        <div className="flex flex-col lg:flex-row px-4 sm:px-6 lg:px-8 w-[85%] mx-auto py-8 gap-6">
-            <div className="w-full lg:w-1/2 px-2 bg-white overflow-y-auto">
-                <h2 className="text-2xl font-semibold mb-4">Feedback Form</h2>
-                <form className="space-y-4">
+        <div className="flex flex-col lg:flex-row px-8 sm:px-6 lg:px-38 mx-auto py-8 gap-6">
+            <div className="w-full lg:w-1/2 bg-white overflow-y-auto">
+                <form className="space-y-6">
                     <div>
-                        <label className="block mb-1 font-medium">FULL NAME</label>
+                        <label className="block mb-1 text-xs font-bold">FULL NAME</label>
                         <input
                             type="text"
-                            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-1"
+                            className="w-full pl-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-1"
                             placeholder="Your Name"
                         />
                     </div>
                     <div>
-                        <label className="block mb-1 font-medium">EMAIL ADDRESS</label>
+                        <label className="block mb-1 text-xs font-bold">EMAIL ADDRESS</label>
                         <input
                             type="email"
-                            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-1"
+                            className="w-full pl-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-1"
                             placeholder="Your Email"
                         />
                     </div>
                     <div>
-                        <label className="block mb-1 font-medium">MESSAGE</label>
+                        <label className="block mb-1 text-xs font-bold">MESSAGE</label>
                         <textarea
-                            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-1 resize-none"
-                            placeholder="Your message..."
+                            className="w-full p-4 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-1 resize-none"
+                            placeholder="Your message"
                             rows={4}
                         />
                     </div>
@@ -71,8 +70,8 @@ const FeedbackSection = () => {
                 </form>
             </div>
 
-            <div className="w-full lg:w-1/2 flex bg-gray-100 justify-center items-center shadow-sm">
-                <div id="map" className="w-[100%] h-[100%] rounded" />
+            <div className=" h-[19.4375rem] lg:h-auto lg:w-1/2 flex bg-gray-100 justify-center items-center shadow-sm">
+                <div id="map" className="w-[100%] h-[100%]" />
             </div>
         </div>
     );

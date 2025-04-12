@@ -5,9 +5,9 @@ import rightArrow from "../assets/rightArrow.png";
 
 const AboutUsBanner = () => {
     return (
-        <div className="px-4 sm:px-6 lg:px-8 w-[85%] mx-auto">
+        <div className="px-8 sm:px-6 lg:px-38 w-full">
             <div className="flex flex-col sm:flex-row w-full h-auto sm:h-[450px] bg-gray-50">
-                <div className="w-full sm:w-1/2 h-[250px] sm:h-full">
+                <div className="w-full h-[19.4375rem] sm:h-full">
                     <img
                         src={bannerSectionImage}
                         alt="Left"
@@ -15,8 +15,8 @@ const AboutUsBanner = () => {
                     />
                 </div>
 
-                <div className="w-full sm:w-1/2 bg-gray-100 flex items-center justify-center p-6 sm:p-[4rem]">
-                    <div className="w-full sm:w-[80%] flex flex-col gap-4 text-center sm:text-left">
+                <div className="w-full h-[19.4375rem] lg:h-full bg-gray-100 flex items-center justify-center">
+                    <div className="w-full sm:w-[80%] flex flex-col gap-4 sm:text-left p-4">
                         <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold">About Us</h2>
                         <p className="text-base sm:text-lg text-gray-700">
                             Decora is a modern home decor brand based in Patiala, India.
