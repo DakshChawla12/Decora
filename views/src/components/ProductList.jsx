@@ -1,13 +1,20 @@
 import React, { useState, useContext } from "react";
 import { StoreContext } from "../Context/StoreContext";
 import AddProduct from "./AddProduct";
+import LoadingSpinner from './LoadingSpinner';
 
 const ProductList = () => {
-    const { products, handleDelete, handleUpdate, handleAddProduct } = useContext(StoreContext);
+    const { products, handleDelete, handleUpdate, handleAddProduct, loadingProducts } = useContext(StoreContext);
 
     const [showForm, setShowForm] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
+
+    if (loadingProducts) {
+        return <div>
+            <LoadingSpinner />
+        </div>
+    }
 
     return (
         <div className="p-6 w-full">
@@ -51,7 +58,7 @@ const ProductList = () => {
                                     )}
                                 </td>
                                 <td className="py-3 px-4">{product.name}</td>
-                                <td className="py-3 px-4">₹{product.price}</td>
+                                <td className="py-3 px-4">${product.price}</td>
                                 <td className="py-3 px-4">{product.stock}</td>
                                 <td className="py-3 px-4 space-x-2">
                                     <button

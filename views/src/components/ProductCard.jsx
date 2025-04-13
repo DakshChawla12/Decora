@@ -1,4 +1,4 @@
-import React , {useContext} from "react";
+import React, { useContext } from "react";
 import { StoreContext } from "../Context/StoreContext";
 import newIcon from "../assets/iconImages/newbtn.svg";
 import discountIcon from "../assets/iconImages/discountgreen.svg";

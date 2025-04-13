@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { StoreContext } from "../Context/StoreContext";
 import ProductCard from "./ProductCard";
+import LoadingSpinner from "./LoadingSpinner";
 
 const ProductListing = () => {
   const {
@@ -28,7 +29,7 @@ const ProductListing = () => {
     fetchAllProducts();
   };
 
-  if (loadingProducts) return <div>Loading products...</div>;
+  if (loadingProducts) return <div><LoadingSpinner /></div>;
   if (productsError) return <div>{productsError}</div>;
 
   return (
