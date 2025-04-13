@@ -34,51 +34,58 @@ const DesignationList = () => {
 
     const renderContent = () => {
         if (!designations) {
-            return <div className="text-lg font-semibold text-red-500">Failed to fetch designations</div>;
-        }
-
-        if (designations.length === 0) {
-            return <div className="text-lg font-medium text-gray-500">No designations available.</div>;
+            return (
+                <div className="text-lg font-semibold text-red-500">
+                    Failed to fetch designations
+                </div>
+            );
         }
 
         return (
             <>
-                <div className="overflow-x-auto bg-white rounded-xl shadow-md ring-1 ring-gray-200">
-                    <table className="min-w-full table-auto text-sm">
-                        <thead className="bg-zinc-200 text-gray-700">
-                            <tr>
-                                <th className="py-4 px-6 text-left font-semibold">ID</th>
-                                <th className="py-4 px-6 text-left font-semibold">Designation</th>
-                                <th className="py-4 px-6 text-left font-semibold">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {designations.map((d, i) => (
-                                <tr
-                                    key={d.id}
-                                    className={`${i % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-zinc-100 transition-colors`}
-                                >
-                                    <td className="py-4 px-6">{d.id}</td>
-                                    <td className="py-4 px-6 font-medium text-zinc-800">{d.title}</td>
-                                    <td className="py-4 px-6 flex gap-2">
-                                        <button
-                                            onClick={() => openPopup(d.id, d.title)}
-                                            className="px-3 py-1 text-sm bg-yellow-400 rounded hover:bg-yellow-500"
-                                        >
-                                            Update
-                                        </button>
-                                        <button
-                                            onClick={() => deleteDesignation(d.id)}
-                                            className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
-                                        >
-                                            Delete
-                                        </button>
-                                    </td>
+                {designations.length > 0 ? (
+                    <div className="overflow-x-auto bg-white rounded-xl shadow-md ring-1 ring-gray-200">
+                        <table className="min-w-full table-auto text-sm">
+                            <thead className="bg-zinc-200 text-gray-700">
+                                <tr>
+                                    <th className="py-4 px-6 text-left font-semibold">ID</th>
+                                    <th className="py-4 px-6 text-left font-semibold">Designation</th>
+                                    <th className="py-4 px-6 text-left font-semibold">Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody>
+                                {designations.map((d, i) => (
+                                    <tr
+                                        key={d.id}
+                                        className={`${i % 2 === 0 ? "bg-gray-50" : "bg-white"
+                                            } hover:bg-zinc-100 transition-colors`}
+                                    >
+                                        <td className="py-4 px-6">{d.id}</td>
+                                        <td className="py-4 px-6 font-medium text-zinc-800">
+                                            {d.title}
+                                        </td>
+                                        <td className="py-4 px-6 flex gap-2">
+                                            <button
+                                                onClick={() => openPopup(d.id, d.title)}
+                                                className="px-3 py-1 text-sm bg-yellow-400 rounded hover:bg-yellow-500"
+                                            >
+                                                Update
+                                            </button>
+                                            <button
+                                                onClick={() => deleteDesignation(d.id)}
+                                                className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+                                            >
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                ) : (
+                    <div className="font-bold w-[full] text-center h-[5rem]">No Designations Available</div> // ✅ fixed tag
+                )}
 
                 <div className="mt-4 flex gap-2 items-center">
                     <input
@@ -106,7 +113,9 @@ const DesignationList = () => {
 
     return (
         <div className="p-6 w-full">
-            <h2 className="text-3xl font-bold text-zinc-800 mb-6">🧾 Designation List</h2>
+            <h2 className="text-3xl font-bold text-zinc-800 mb-6">
+                🧾 Designation List
+            </h2>
             {renderContent()}
 
             {/* ✏️ Update Popup */}

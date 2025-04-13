@@ -12,6 +12,7 @@ import AdminPage from './pages/AdminPage';
 import AdminRoute from './components/AdminRoute';
 import UnauthorisedPage from './pages/UnauthorisedPage';
 import SingleProductPage from './pages/SingleProductPage';
+import NotFound from './components/NotFound';
 
 const App = () => {
     return (
@@ -51,6 +52,8 @@ const App = () => {
                     </AdminRoute>
                 }
             />
+
+            <Route path='*' element={<NotFound/>}/>
 
             <Route path="/unauthorized" element={<UnauthorisedPage />} />
         </Routes>
