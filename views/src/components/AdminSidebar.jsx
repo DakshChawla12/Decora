@@ -6,7 +6,10 @@ import {
     FaUsers,
     FaTags,
     FaThLarge,
+    FaBuilding,
     FaChartBar,
+    FaGlobeAmericas,
+    FaPercent,
 } from "react-icons/fa";
 
 const SidebarItem = ({ icon, label, onClick }) => (
@@ -46,7 +49,7 @@ const AdminSidebar = ({ onSelectSection }) => {
                     onClick={() => onSelectSection("Designation")}
                 />
                 <SidebarItem
-                    icon={<FaThLarge />}
+                    icon={<FaBuilding />}
                     label="Department"
                     onClick={() => onSelectSection("Department")}
                 />
@@ -66,12 +69,12 @@ const AdminSidebar = ({ onSelectSection }) => {
                     onClick={() => onSelectSection("Category")}
                 />
                 <SidebarItem
-                    icon={<FaThLarge />}
+                    icon={<FaGlobeAmericas />}
                     label="Country"
                     onClick={() => onSelectSection("Country")}
                 />
                 <SidebarItem
-                    icon={<FaThLarge />}
+                    icon={<FaPercent />}
                     label="Discount Codes"
                     onClick={() => onSelectSection("Discount")}
                 />
