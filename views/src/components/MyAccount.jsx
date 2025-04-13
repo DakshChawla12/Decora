@@ -4,17 +4,17 @@ import UserDetails from "./UserDetails";
 import UserOrders from "./UserOrders";
 import UserAddress from "./UserAddress";
 import { useNavigate } from "react-router-dom";
-
+import { jwtDecode } from "jwt-decode";
 
 const MyAccount = () => {
-    
+
     const [selectedSection, setSelectedSection] = useState("Details");
     const navigate = useNavigate();
-    
+
     const handleLogout = () => {
         localStorage.clear();
         sessionStorage.clear();
-    
+
         navigate("/login");
     };
 

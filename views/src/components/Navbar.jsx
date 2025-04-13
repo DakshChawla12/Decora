@@ -14,6 +14,7 @@ import { ReactComponent as HeartIcon } from "../assets/iconImages/heart.svg";
 const NavBar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const { handleNavigate } = useContext(StoreContext);
+    const token = localStorage.getItem("token");
 
     return (
         <>
@@ -25,30 +26,42 @@ const NavBar = () => {
                     Decora
                 </div>
 
-        <div className="hidden lg:flex space-x-8 text-sm font-medium text-gray-500">
-          <Link to="/" className="text-black">Home</Link>
-          <Link to="/shop">Shop</Link>
-          <Link to="/blog">Blog</Link>
-          <Link to="/contact">Contact Us</Link>
-        </div>
+                <div className="hidden lg:flex space-x-8 text-sm font-medium text-gray-500">
+                    <Link to="/" className="text-black">
+                        Home
+                    </Link>
+                    <Link to="/shop" className="text-black">Shop</Link>
+                    <Link to="/blog" className="text-black">Blog</Link>
+                    <Link to="/contact" className="text-black">Contact Us</Link>
+                </div>
 
-        <div className="flex items-center space-x-4">
-          <div className="lg:w-full mx-auto hidden md:flex items-center lg:justify-between space-x-4">
-            <SearchIcon className="cursor-pointer w-5 h-5" />
-            <UserIcon className="cursor-pointer w-5 h-5" onClick={() => handleNavigate("/profile")} />
-
-                        <div
-                            className="relative cursor-pointer"
-                            onClick={() => handleNavigate("/cart")}
-                        >
-                            <BagIcon className="w-5 h-5" />
-                            <span className="absolute -top-1 -right-2 bg-black text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-                                2
-                            </span>
-                        </div>
+                <div className="flex items-center space-x-4">
+                    <div className="lg:w-full mx-auto hidden md:flex items-center lg:justify-between space-x-4">
+                        {token ? (
+                            <>
+                                <SearchIcon className="cursor-pointer w-5 h-5" />
+                                <UserIcon
+                                    className="cursor-pointer w-5 h-5"
+                                    onClick={() => handleNavigate("/profile")}
+                                />
+                                <div
+                                    className="relative cursor-pointer"
+                                    onClick={() => handleNavigate("/cart")}
+                                >
+                                    <BagIcon className="w-5 h-5" />
+                                </div>
+                            </>
+                        ) : (
+                            <button
+                                onClick={() => handleNavigate("/login")}
+                                className="px-4 py-2 text-sm font-medium bg-black text-white rounded-md"
+                            >
+                                Sign In
+                            </button>
+                        )}
                     </div>
 
-                    <button onClick={() => setMenuOpen(true)} className="block lg:hidden">
+                    <button onClick={() => setMenuOpen(true)} className="block md:hidden">
                         <HamburgIcon className="h-6 w-6" />
                     </button>
                 </div>
@@ -96,10 +109,10 @@ const NavBar = () => {
                                 </Link>
                                 <Link
                                     className="border-b pb-4 border-gray-300"
-                                    to="/products"
+                                    to="/blog"
                                     onClick={() => setMenuOpen(false)}
                                 >
-                                    Products
+                                    Blogs
                                 </Link>
                                 <Link
                                     className="border-b pb-4 border-gray-300"
@@ -120,25 +133,21 @@ const NavBar = () => {
                                     <span className="text-gray-500">Cart</span>
                                     <div className="relative">
                                         <BagIcon className="h-5 w-5" />
-                                        <span className="absolute -top-1 -right-2 bg-black text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-                                            2
-                                        </span>
                                     </div>
                                 </div>
 
-                                <div className="flex justify-between items-center border-b pb-4 border-gray-300">
-                                    <span className="text-gray-500">Wishlist</span>
+                                <div className="flex justify-between items-center border-b pb-4 border-gray-300" onClick={() => { handleNavigate('/profile') }}>
+                                    <span className="text-gray-500">Profile</span>
                                     <div className="relative">
-                                        <HeartIcon className="h-5 w-5" />
-                                        <span className="absolute -top-1 -right-2 bg-black text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-                                            2
-                                        </span>
+                                        <UserIcon className="h-5 w-5" />
                                     </div>
                                 </div>
 
-                                <button className="w-full bg-black text-white py-2 rounded-md font-medium">
-                                    Sign In
-                                </button>
+                                {!token && (
+                                    <button className="w-full bg-black text-white py-2 rounded-md font-medium">
+                                        Sign In
+                                    </button>
+                                )}
                             </div>
 
                             <div className="flex space-x-4 pt-6 text-xl">

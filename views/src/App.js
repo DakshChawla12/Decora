@@ -1,16 +1,17 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import LoginPage from "./pages/LoginPage";
-import SignupPage from "./pages/SignupPage";
-import "./App.css";
-import ShopPage from "./pages/ShopPage";
-import BlogPage from "./pages/BlogPage";
-import LandingPage from "./pages/LandingPage";
-import ContactUsPage from "./pages/ContactUsPage";
-import SingleProductPage from "./pages/SingleProductPage";
-import CartPage from "./pages/CartPage";
-import ProtectedRoute from "./components/ProtectedRoute"; // ✅ Import the wrapper
-import AdminPage from "./pages/AdminPage";
-import ProfilePage from "./pages/ProfilePage";
+import { Routes, Route } from 'react-router-dom';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
+import ShopPage from './pages/ShopPage';
+import BlogPage from './pages/BlogPage';
+import LandingPage from './pages/LandingPage';
+import ContactUsPage from './pages/ContactUsPage';
+import CartPage from './pages/CartPage';
+import ProfilePage from './pages/ProfilePage';
+import ProtectedRoute from './components/ProtectedRoute'; 
+import AdminPage from './pages/AdminPage';
+import AdminRoute from './components/AdminRoute';
+import UnauthorisedPage from './pages/UnauthorisedPage';
+import SingleProductPage from './pages/SingleProductPage';
 
 const App = () => {
     return (
@@ -21,19 +22,37 @@ const App = () => {
             <Route path="/shop" element={<ShopPage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/contact" element={<ContactUsPage />} />
-            <Route path="/cart" element={<CartPage />} />
-            <Route path="/admin" element={<AdminPage />} />
-            <Route path="/profile" element={<ProfilePage/>} />
+            <Route path="/product/:id" element={<SingleProductPage />} />
 
-            {/* 🔒 Protected Route */}
+            {/* Protected routes */}
             <Route
-                path="/product/:id"
+                path="/cart"
                 element={
                     <ProtectedRoute>
-                        <SingleProductPage />
+                        <CartPage />
                     </ProtectedRoute>
                 }
             />
+            <Route
+                path="/profile"
+                element={
+                    <ProtectedRoute>
+                        <ProfilePage />
+                    </ProtectedRoute>
+                }
+            />
+
+            {/* Admin routes */}
+            <Route
+                path="/admin"
+                element={
+                    <AdminRoute>
+                        <AdminPage />
+                    </AdminRoute>
+                }
+            />
+
+            <Route path="/unauthorized" element={<UnauthorisedPage />} />
         </Routes>
     );
 };

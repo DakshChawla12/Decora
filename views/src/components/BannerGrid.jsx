@@ -3,6 +3,7 @@ import React from "react";
 import banner_1 from "../assets/landingPageImages/banner_1.png";
 import banner_2 from "../assets/landingPageImages/bannerGrid1.png";
 import banner_3 from "../assets/landingPageImages/bannerGrid2.png";
+import { Link } from "react-router-dom";
 
 const BannerGrid = () => {
   return (
@@ -16,7 +17,7 @@ const BannerGrid = () => {
           />
           <div className="absolute top-7 left-8 lg:top-15 lg:left-12 text-black">
             <h2 className="text-2xl md:text-4xl font-semibold">Living Room</h2>
-            <a href="#" className="mt-2 inline-block border-b-2 text-sm md:text-base">Shop Now →</a>
+            <Link to="/shop" className="mt-2 inline-block border-b-2 text-sm md:text-base">Shop Now →</Link>
           </div>
         </div>
 
@@ -29,7 +30,7 @@ const BannerGrid = () => {
             />
             <div className="absolute bottom-15 left-8 lg:bottom-15 lg:left-15 text-black">
               <h2 className="text-xl md:text-4xl font-semibold">Bedroom</h2>
-              <a href="#" className="mt-2 inline-block border-b-2 text-sm md:text-base">Shop Now →</a>
+              <Link to="/shop" className="mt-2 inline-block border-b-2 text-sm md:text-base">Shop Now →</Link>
             </div>
           </div>
           <div className="relative">
@@ -40,7 +41,7 @@ const BannerGrid = () => {
             />
             <div className="absolute bottom-15 left-8 lg:bottom-15 lg:left-15 text-black">
               <h2 className="text-xl md:text-4xl font-semibold">Kitchen</h2>
-              <a href="#" className="mt-2 inline-block border-b-2 text-sm md:text-base">Shop Now →</a>
+              <Link tp="/shop" className="mt-2 inline-block border-b-2 text-sm md:text-base">Shop Now →</Link>
             </div>
           </div>
         </div>

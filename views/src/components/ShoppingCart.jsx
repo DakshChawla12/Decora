@@ -114,7 +114,7 @@ const ShoppingCart = ({
         setCouponSuccess("");
         setCouponError("");
         // Redirect to orders page
-        navigate("/"); // Adjust to your route
+        navigate("/profile"); // Adjust to your route
       } else {
         setCheckoutError(response.message || "Failed to place order.");
       }

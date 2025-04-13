@@ -22,6 +22,7 @@ const StoreContextProvider = ({ children }) => {
     const [customerOrders, setCustomerOrders] = useState([]);
     const [employees, setEmployees] = useState([]);
     const [users, setUsers] = useState([]);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const navigate = useNavigate();
 
@@ -92,6 +93,7 @@ const StoreContextProvider = ({ children }) => {
                 setUser(user || { email });
                 localStorage.setItem('token', token);
                 navigate("/");
+                setIsLoggedIn(true);
             }
         } catch (error) {
             showErrorToast(error.response?.data?.message || "Login failed.");
@@ -220,6 +222,7 @@ const StoreContextProvider = ({ children }) => {
 
     const handleLogOut = () => {
         localStorage.clear();
+        setIsLoggedIn(false);
         navigate('/login');
     };
 
@@ -242,7 +245,6 @@ const StoreContextProvider = ({ children }) => {
             setReviews(reviews);
         } catch (error) {
             console.error("Error fetching reviews:", error.response?.data || error.message);
-            showErrorToast("Failed to load product reviews.");
             setReviews([]);
         }
     };
@@ -687,7 +689,7 @@ const StoreContextProvider = ({ children }) => {
 
     const handleAddProduct = async (productData) => {
         try {
-            console.log(productData);
+            setLoadingProducts(true);
             const token = localStorage.getItem('token');
             const response = await axios.post(
                 `http://localhost:5001/api/product`,
@@ -705,6 +707,8 @@ const StoreContextProvider = ({ children }) => {
         } catch (err) {
             showErrorToast("Failed to add product");
             console.error(err);
+        } finally {
+            setLoadingProducts(false);
         }
     };
 
@@ -907,7 +911,10 @@ const StoreContextProvider = ({ children }) => {
                 createEmployee,
                 deleteEmployee,
                 getAllUsers,
-                users
+                users,
+                getCustomerOrders,
+                customerOrders,
+                isLoggedIn
             }}
         >
             {children}
