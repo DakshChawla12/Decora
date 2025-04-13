@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
+import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from "react-router-dom";
 import { showErrorToast, showSuccessToast } from '../utils/toatsUtils';
 
@@ -30,8 +31,27 @@ const StoreContextProvider = ({ children }) => {
         navigate(path);
     };
 
+    const isTokenValid = (token) => {
+        try {
+            const decoded = jwtDecode(token);
+            const currentTime = Date.now() / 1000;
+            return decoded.exp > currentTime;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    const checkAuthAndSignOutIfInvalid = () => {
+        const token = localStorage.getItem('token');
+        if (!token || !isTokenValid(token)) {
+            localStorage.clear();
+            handleNavigate('/login');
+        }
+    }
+
     useEffect(() => {
         fetchAllProducts();
+        checkAuthAndSignOutIfInvalid();
     }, []);
 
     const fetchProducts = async () => {
