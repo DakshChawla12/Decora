@@ -34,7 +34,7 @@ const orderRoutes = require("./routes/orderRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const subscriptionRoutes = require("./routes/subscriptionRoutes");
 const wishListRoutes = require("./routes/wishlistRoutes");
-
+const emailRoutes = require("./routes/emailRoutes");
 // *** GraphQl Imports *** //
 const schema = require('./graphql/schema/schema');
 
@@ -61,6 +61,7 @@ app.use("/api/product", productRoutes);
 app.use("/api/brand", brandRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/review", reviewRoutes);
+app.use("/api/email", emailRoutes);
 
 app.use(
     "/graphql",
