@@ -52,7 +52,7 @@ router.post("/login", validateUser, userController.login);
 router.post("/logout", isAuthenticated, userController.logout);
 
 router.get("/", isAuthenticated, isAdmin, userController.getUsers);
-router.get("/:id", isAuthenticated, userController.getUser);
+router.get("/user-details", isAuthenticated, userController.getUser);
 
 router.patch("/update", isAuthenticated, userController.updateUser);
 router.patch("/update-password", isAuthenticated, validatePasswordUpdate, userController.updatePassword);

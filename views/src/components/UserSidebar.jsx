@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { MdFlipCameraIos } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import account_image from "../assets/account_image.png";
+import { StoreContext } from "../Context/StoreContext";
 
 const UserSidebar = ({ onSelectSection }) => {
     const [isDropdownOpen, setDropdownOpen] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
+
+    const { user } = useContext(StoreContext);
 
     useEffect(() => {
         try {
@@ -36,7 +39,7 @@ const UserSidebar = ({ onSelectSection }) => {
                             <MdFlipCameraIos />
                         </div>
                     </div>
-                    <p className="mt-2">Sofia Havertz</p>
+                    <p className="mt-2">{localStorage.getItem("name") || "Username"}</p>
                 </div>
 
                 {/* Mobile Dropdown */}
@@ -87,7 +90,7 @@ const UserSidebar = ({ onSelectSection }) => {
                                     onSelectSection("Logout");
                                     setDropdownOpen(false);
                                 }}
-                                className="block w-full text-left p-3 text-gray-700 hover:bg-gray-100"
+                                className="block w-full text-left p-3 text-gray-700 hover:bg-red-500"
                             >
                                 Logout
                             </button>
@@ -125,7 +128,7 @@ const UserSidebar = ({ onSelectSection }) => {
 
                     <button
                         onClick={() => onSelectSection("Logout")}
-                        className="text-gray-500 hover:text-black transition-all"
+                        className="text-gray-500 hover:text-red-500 transition-all"
                     >
                         Logout
                     </button>

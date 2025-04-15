@@ -1,13 +1,32 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { FaTimesCircle } from "react-icons/fa";
+import { StoreContext } from '../Context/StoreContext';
 
 const OrderFailure = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [countdown, setCountdown] = useState(5);
+
+  const { handleNavigate } = useContext(StoreContext);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1000);
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (!isLoading) {
+      const interval = setInterval(() => {
+        setCountdown(prev => {
+          if (prev === 1) {
+            handleNavigate('/');
+            clearInterval(interval);
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [isLoading, handleNavigate]);
 
   if (isLoading) {
     return (
@@ -24,9 +43,13 @@ const OrderFailure = () => {
           <div className="text-center p-8 bg-red-50">
             <FaTimesCircle className="text-red-500 text-6xl mx-auto mb-4 animate-bounce" />
             <h1 className="text-3xl font-bold text-gray-800 mb-2">Order Failed!</h1>
-            <p className="text-gray-600">We couldn't process your order</p>
-            <button className="mt-6 w-full flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-200">
-              Try Again
+            <p className="text-gray-600 mb-2">We couldn't process your order</p>
+            <p className="text-sm text-gray-500 mb-4">Redirecting you to home in <span className="font-semibold">{countdown}</span> seconds...</p>
+            <button
+              className="mt-4 w-full flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-200"
+              onClick={() => handleNavigate('/')}
+            >
+              Back To Home
             </button>
           </div>
         </div>

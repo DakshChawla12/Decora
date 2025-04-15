@@ -38,11 +38,11 @@ exports.getUsers = async (req, res) => {
 
 exports.getUser = async (req, res) => {
     try {
-        if (!req.session.userId) {
+        if (!req.user.id) {
             return res.status(401).json({ success: false, message: 'User not authenticated' });
         }
 
-        const user = await User.findByPk(req.params.id, {
+        const user = await User.findByPk(req.user.id, {
             include: { model: Role, as: 'role' }
         });
 

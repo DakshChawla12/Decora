@@ -13,7 +13,10 @@ const StoreContextProvider = ({ children }) => {
     const [cart, setCart] = useState([]);
     const [filterCategory, setFilterCategory] = useState("All Categories");
     const [filterPrice, setFilterPrice] = useState("All Prices");
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState({
+        name: "",
+        email: ""
+    });
     const [reviews, setReviews] = useState([]);
     const [departments, setDepartments] = useState([]);
     const [designations, setDesignations] = useState([]);
@@ -112,6 +115,8 @@ const StoreContextProvider = ({ children }) => {
                 showSuccessToast(message);
                 setUser(user || { email });
                 localStorage.setItem('token', token);
+                localStorage.setItem('name', user.name || "Username");
+                localStorage.setItem('email', user.email || "abc@gmail.com");
                 navigate("/");
                 setIsLoggedIn(true);
             }
