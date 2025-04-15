@@ -262,7 +262,8 @@
 
 
 
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { StoreContext } from "../Context/StoreContext";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
 import { showErrorToast, showSuccessToast } from "../utils/toatsUtils";
@@ -275,6 +276,8 @@ const UserDetails = () => {
         newPassword: "",
         repeatPassword: "",
     });
+
+    const { user } = useContext(StoreContext)
 
     const [showOldPassword, setShowOldPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
@@ -379,7 +382,7 @@ const UserDetails = () => {
                     <input
                         type="text"
                         name="name"
-                        placeholder="John Doe"
+                        placeholder={localStorage.getItem("name") || "Username"}
                         value={formData.name}
                         onChange={handleChange}
                         className="border border-gray-300 px-3 py-1 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
@@ -396,7 +399,7 @@ const UserDetails = () => {
                     <input
                         type="email"
                         name="email"
-                        placeholder="E-mail"
+                        placeholder={localStorage.getItem("email") || "email"}
                         value={formData.email}
                         onChange={handleChange}
                         className="border border-gray-300 px-3 py-1 rounded-md focus:outline-none focus:ring-1 focus:ring-black"

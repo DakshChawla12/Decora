@@ -13,6 +13,8 @@ import AdminRoute from './components/AdminRoute';
 import UnauthorisedPage from './pages/UnauthorisedPage';
 import SingleProductPage from './pages/SingleProductPage';
 import NotFound from './components/NotFound';
+import OrderConfirmation from './components/OrderConfirmation';
+import OrderFailure from './components/OrderFailure';
 
 const App = () => {
     return (
@@ -52,10 +54,11 @@ const App = () => {
                     </AdminRoute>
                 }
             />
-
+            <Route path="/unauthorized" element={<UnauthorisedPage />} />
+            <Route path='/orderSuccess' element={<OrderConfirmation/>}/>
+            <Route path='/orderFailure' element={<OrderFailure/>}/>
             <Route path='*' element={<NotFound/>}/>
 
-            <Route path="/unauthorized" element={<UnauthorisedPage />} />
         </Routes>
     );
 };
