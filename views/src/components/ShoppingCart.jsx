@@ -1,9 +1,10 @@
-import React, { useState } from "react";
-import { FiTag } from "react-icons/fi";
-import { useLazyQuery } from "@apollo/client";
-import gql from "graphql-tag";
-import axios from "axios"; // For HTTP requests
-import { useNavigate } from "react-router-dom"; // For redirecting
+import React, { useState } from 'react';
+import { FiTag } from 'react-icons/fi';
+import { useLazyQuery } from '@apollo/client';
+import gql from 'graphql-tag';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
 // GraphQL query to validate coupon
 const VALIDATE_COUPON = gql`
@@ -27,77 +28,61 @@ const ShoppingCart = ({
   subtotal,
   total,
 }) => {
-  const [couponCode, setCouponCode] = useState("");
+  const [couponCode, setCouponCode] = useState('');
   const [discountPercentage, setDiscountPercentage] = useState(0);
-  const [couponError, setCouponError] = useState("");
-  const [couponSuccess, setCouponSuccess] = useState("");
-  const [checkoutError, setCheckoutError] = useState("");
+  const [couponError, setCouponError] = useState('');
+  const [couponSuccess, setCouponSuccess] = useState('');
+  const [checkoutError, setCheckoutError] = useState('');
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const navigate = useNavigate();
+  const stripe = useStripe();
+  const elements = useElements();
 
   const [validateCoupon, { loading }] = useLazyQuery(VALIDATE_COUPON, {
     onCompleted: (data) => {
       if (data.validateCoupon) {
         setDiscountPercentage(data.validateCoupon.percentage);
-        setCouponError("");
+        setCouponError('');
         setCouponSuccess(`Coupon applied! ${data.validateCoupon.percentage}% off.`);
       } else {
         setDiscountPercentage(0);
-        setCouponError("Invalid coupon code.");
-        setCouponSuccess("");
+        setCouponError('Invalid coupon code.');
+        setCouponSuccess('');
       }
     },
     onError: () => {
-      setCouponError("Error validating coupon. Please try again.");
-      setCouponSuccess("");
+      setCouponError('Error validating coupon. Please try again.');
+      setCouponSuccess('');
     },
   });
 
   const handleApplyCoupon = () => {
     if (!couponCode) {
-      setCouponError("Please enter a coupon code.");
-      setCouponSuccess("");
+      setCouponError('Please enter a coupon code.');
+      setCouponSuccess('');
       return;
     }
-
     validateCoupon({ variables: { code: couponCode } });
-  };
-
-  // Function to send checkout request to the backend
-  const sendCheckoutRequest = async (totalAmount) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:5001/api/order",
-        { totalAmount },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // Adjust based on your auth setup
-          },
-        }
-      );
-
-      return response.data; // Return response data for further handling
-    } catch (error) {
-      // Throw error with message for handling in caller
-      throw new Error(
-        error.response?.data?.message || "Error placing order. Please try again."
-      );
-    }
   };
 
   const handleCheckout = async () => {
     if (!cartItems.length) {
-      setCheckoutError("Your cart is empty.");
+      setCheckoutError('Your cart is empty.');
       return;
     }
 
     if (!selectedShipping) {
-      setCheckoutError("Please select a shipping option.");
+      setCheckoutError('Please select a shipping option.');
+      return;
+    }
+
+    if (!stripe || !elements) {
+      setCheckoutError('Stripe is not loaded.');
       return;
     }
 
     setIsCheckingOut(true);
-    setCheckoutError("");
+    setCheckoutError('');
 
     const shippingCost =
       shippingOptions.find((option) => option.value === selectedShipping)?.cost || 0;
@@ -105,23 +90,71 @@ const ShoppingCart = ({
     const totalAmount = subtotal - discountAmount + shippingCost;
 
     try {
-      const response = await sendCheckoutRequest(totalAmount);
+      // Step 1: Create Payment Intent
+      const { data } = await axios.post(
+        'http://localhost:5001/api/order',
+        { totalAmount },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
 
-      if (response.success) {
-        // Clear local state
-        setCouponCode("");
-        setDiscountPercentage(0);
-        setCouponSuccess("");
-        setCouponError("");
-        // Redirect to orders page
-        navigate("/orderSuccess"); // Adjust to your route
+      if (!data.success) {
+        throw new Error(data.message || 'Failed to initiate payment.');
+      }
+
+      // Step 2: Confirm payment with Stripe
+      const cardElement = elements.getElement(CardElement);
+      const { error, paymentIntent } = await stripe.confirmCardPayment(data.clientSecret, {
+        payment_method: {
+          card: cardElement,
+          billing_details: {
+            // Add billing details if needed
+            name: 'Customer Name', // Replace with actual customer data
+          },
+        },
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      if (paymentIntent.status === 'succeeded') {
+        // Step 3: Confirm order creation
+        const confirmResponse = await axios.post(
+          'http://localhost:5001/api/order/confirm',
+          {
+            paymentIntentId: paymentIntent.id,
+            totalAmount,
+            cartItems: data.cartItems, // Use cart items from initial response
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          }
+        );
+
+        if (confirmResponse.data.success) {
+          // Clear local state
+          setCouponCode('');
+          setDiscountPercentage(0);
+          setCouponSuccess('');
+          setCouponError('');
+          // Redirect to orders page
+          navigate('/orderSuccess');
+        } else {
+          throw new Error(confirmResponse.data.message || 'Failed to place order.');
+        }
       } else {
-        setCheckoutError(response.message || "Failed to place order.");
+        throw new Error('Payment not successful.');
       }
     } catch (error) {
-      navigate("/orderFailure");
       setCheckoutError(error.message);
-      console.error("Checkout error:", error);
+      navigate('/orderFailure');
+      console.error('Checkout error:', error);
     } finally {
       setIsCheckingOut(false);
     }
@@ -210,9 +243,7 @@ const ShoppingCart = ({
               {shippingOptions.map((option) => (
                 <div
                   key={option.value}
-                  className={`flex justify-between items-center border-2 rounded-sm px-4 py-3 cursor-pointer transition-all duration-200 ${selectedShipping === option.value
-                    ? "bg-gray-100 border-black"
-                    : "border-gray-400"
+                  className={`flex justify-between items-center border-2 rounded-sm px-4 py-3 cursor-pointer transition-all duration-200 ${selectedShipping === option.value ? 'bg-gray-100 border-black' : 'border-gray-400'
                     }`}
                   onClick={() => setSelectedShipping(option.value)}
                 >
@@ -258,12 +289,35 @@ const ShoppingCart = ({
               </div>
             </div>
 
+            {/* Payment Form */}
+            <div className="mt-6">
+              <label className="block text-sm font-medium mb-2">Card Details</label>
+              <div className="border-2 rounded-md p-3">
+                <CardElement
+                  options={{
+                    style: {
+                      base: {
+                        fontSize: '16px',
+                        color: '#424770',
+                        '::placeholder': {
+                          color: '#aab7c4',
+                        },
+                      },
+                      invalid: {
+                        color: '#9e2146',
+                      },
+                    },
+                  }}
+                />
+              </div>
+            </div>
+
             <button
               className="mt-6 w-full bg-black text-white py-3 rounded-md text-lg font-medium hover:bg-gray-800 transition disabled:bg-gray-500"
               onClick={handleCheckout}
-              disabled={isCheckingOut}
+              disabled={isCheckingOut || !stripe || !elements}
             >
-              {isCheckingOut ? "Processing..." : "Checkout"}
+              {isCheckingOut ? 'Processing...' : 'Pay Now'}
             </button>
             {checkoutError && (
               <p className="mt-2 text-red-500 text-sm">{checkoutError}</p>
@@ -295,7 +349,7 @@ const ShoppingCart = ({
             onClick={handleApplyCoupon}
             disabled={loading}
           >
-            {loading ? "Applying..." : "Apply"}
+            {loading ? 'Applying...' : 'Apply'}
           </button>
         </div>
         {couponError && <p className="text-red-500 text-sm">{couponError}</p>}

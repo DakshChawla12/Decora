@@ -1,4 +1,5 @@
 const { Order, OrderItem, Cart, Product, Customer, User } = require('../models/associations');
+const stripe = require('../config/stripeConfig');
 
 // ✅ Create a new order from the customer's cart
 const createOrder = async (req, res) => {
@@ -21,10 +22,43 @@ const createOrder = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Your cart is empty' });
         }
 
-        // Create order with provided totalAmount
+        // Create Stripe Payment Intent
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: Math.round(totalAmount * 100), // Convert to cents
+            currency: 'usd', // Adjust currency as needed
+            metadata: { customerId },
+            payment_method_types: ['card'],
+        });
+
+        // Return client secret to frontend for payment confirmation
+        res.status(200).json({
+            success: true,
+            clientSecret: paymentIntent.client_secret,
+            cartItems, // Send cart items to use in order creation after payment
+            totalAmount,
+        });
+    } catch (error) {
+        console.error('Error initiating payment:', error.message);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// New endpoint to confirm order after payment
+const confirmOrder = async (req, res) => {
+    try {
+        const customerId = req.user.customerId;
+        const { paymentIntentId, totalAmount, cartItems } = req.body;
+
+        // Verify payment intent
+        const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+        if (paymentIntent.status !== 'succeeded') {
+            return res.status(400).json({ success: false, message: 'Payment not successful' });
+        }
+
+        // Create order
         const order = await Order.create({
             customerId,
-            totalAmount, // Use the frontend-provided total (subtotal - discount + shipping)
+            totalAmount,
             status: 'Pending',
         });
 
@@ -59,11 +93,10 @@ const createOrder = async (req, res) => {
             orders,
         });
     } catch (error) {
-        console.error('Error creating order:', error.message);
+        console.error('Error confirming order:', error.message);
         res.status(500).json({ success: false, message: error.message });
     }
 };
-
 
 // ✅ Get all orders for the logged-in customer
 const getOrdersByCustomer = async (req, res) => {
@@ -168,5 +201,6 @@ module.exports = {
     createOrder,
     getOrdersByCustomer,
     updateOrderStatus,
-    getAllOrdersAdmin
+    getAllOrdersAdmin,
+    confirmOrder
 };
