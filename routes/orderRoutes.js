@@ -11,4 +11,6 @@ router.get("/admin/all", isAuthenticated, isAdmin, orderController.getAllOrdersA
 
 router.put("/:orderId", isAuthenticated, isAdmin, orderController.updateOrderStatus);
 
+router.post('/confirm', isAuthenticated, orderController.confirmOrder);
+
 module.exports = router;

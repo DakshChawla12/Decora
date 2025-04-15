@@ -1,6 +1,10 @@
 import React, { useState, useContext } from "react";
 import { StoreContext } from "../Context/StoreContext";
 import ShoppingCart from "./ShoppingCart";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
 const Cart = ({ cartItems }) => {
   const { updateCartHandler, removeCartItem } = useContext(StoreContext);
@@ -50,18 +54,20 @@ const Cart = ({ cartItems }) => {
         </div>
       </div>
 
-      {/* ShoppingCart Component */}
-      <ShoppingCart
-        cartItems={cartItems}
-        updateCartHandler={updateCartHandler}
-        removeCartItem={removeCartItem}
-        selectedShipping={selectedShipping}
-        setSelectedShipping={setSelectedShipping}
-        shippingOptions={shippingOptions}
-        getSubtotal={getSubtotal}
-        subtotal={subtotal}
-        total={total}
-      />
+      {/* ShoppingCart Component wrapped inside Elements */}
+      <Elements stripe={stripePromise}>
+        <ShoppingCart
+          cartItems={cartItems}
+          updateCartHandler={updateCartHandler}
+          removeCartItem={removeCartItem}
+          selectedShipping={selectedShipping}
+          setSelectedShipping={setSelectedShipping}
+          shippingOptions={shippingOptions}
+          getSubtotal={getSubtotal}
+          subtotal={subtotal}
+          total={total}
+        />
+      </Elements>
     </div>
   );
 };
