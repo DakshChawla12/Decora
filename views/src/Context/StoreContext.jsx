@@ -1,8 +1,8 @@
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import { showErrorToast, showSuccessToast } from '../utils/toatsUtils';
+import { showErrorToast, showSuccessToast } from "../utils/toatsUtils";
 
 export const StoreContext = createContext(null);
 
@@ -15,7 +15,7 @@ const StoreContextProvider = ({ children }) => {
     const [filterPrice, setFilterPrice] = useState("All Prices");
     const [user, setUser] = useState({
         name: "",
-        email: ""
+        email: "",
     });
     const [reviews, setReviews] = useState([]);
     const [departments, setDepartments] = useState([]);
@@ -27,6 +27,58 @@ const StoreContextProvider = ({ children }) => {
     const [employees, setEmployees] = useState([]);
     const [users, setUsers] = useState([]);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [feedback, setFeedback] = useState({
+        name: "",
+        to: "",
+        message: "",
+    });
+    const [email, setEmail] = useState("");
+    const handleSubscribe = async () => {
+            if (!email.trim()) {
+                alert("Please enter your email address.");
+                return;
+            }
+    
+            try {
+                const response = await axios.post("http://localhost:5001/api/email/subscribe", { email });
+    
+                if (response.status === 200) {
+                    showSuccessToast("Thank you for subscribing!");
+                    setEmail("");
+                }
+            } catch (error) {
+                console.error("Subscription error:", error);
+                showErrorToast("Something went wrong. Please try again later.");
+            }
+        };
+
+    const handleFeedback = async (e) => {
+        e.preventDefault();
+
+        // Basic validation
+        if (!feedback.name.trim() || !feedback.to.trim() || !feedback.message.trim()) {
+            showErrorToast("Please fill in all fields before submitting.");
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem("token");
+
+            const response = await axios.post("http://localhost:5001/api/email/sendfeedback", feedback, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (response.status === 200) {
+                showSuccessToast("Thank you for your feedback!");
+                setFeedback({ name: "", to: "", message: "" });
+            }
+        } catch (error) {
+            console.error("Error sending feedback:", error);
+            showErrorToast("Something went wrong. Please try again.");
+        }
+    };
 
     const navigate = useNavigate();
 
@@ -42,15 +94,15 @@ const StoreContextProvider = ({ children }) => {
         } catch (error) {
             return false;
         }
-    }
+    };
 
     const checkAuthAndSignOutIfInvalid = () => {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
         if (!token || !isTokenValid(token)) {
             localStorage.clear();
-            handleNavigate('/login');
+            handleNavigate("/login");
         }
-    }
+    };
 
     useEffect(() => {
         fetchAllProducts();
@@ -77,7 +129,7 @@ const StoreContextProvider = ({ children }) => {
 
             const res = await axios.post("http://localhost:5001/api/product/filter", {
                 minPrice,
-                maxPrice
+                maxPrice,
             });
 
             setProducts(res.data.products);
@@ -114,9 +166,9 @@ const StoreContextProvider = ({ children }) => {
             if (success) {
                 showSuccessToast(message);
                 setUser(user || { email });
-                localStorage.setItem('token', token);
-                localStorage.setItem('name', user.name || "Username");
-                localStorage.setItem('email', user.email || "abc@gmail.com");
+                localStorage.setItem("token", token);
+                localStorage.setItem("name", user.name || "Username");
+                localStorage.setItem("email", user.email || "abc@gmail.com");
                 navigate("/");
                 setIsLoggedIn(true);
             }
@@ -127,29 +179,29 @@ const StoreContextProvider = ({ children }) => {
 
     const signupUser = async (formData) => {
         try {
-            const response = await axios.post('http://localhost:5001/api/user/register', formData);
+            const response = await axios.post("http://localhost:5001/api/user/register", formData);
             const { success, message } = response.data;
 
             if (success) {
-                showSuccessToast(message || 'Signup successful!');
+                showSuccessToast(message || "Signup successful!");
                 setTimeout(() => {
-                    navigate('/login');
+                    navigate("/login");
                 }, 2000);
             }
         } catch (err) {
-            const errorMsg = err.response?.data?.message || 'Signup failed.';
+            const errorMsg = err.response?.data?.message || "Signup failed.";
             showErrorToast(errorMsg);
         }
     };
 
     const fetchCart = async () => {
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem("token");
 
-            const response = await axios.get('http://localhost:5001/api/cart', {
+            const response = await axios.get("http://localhost:5001/api/cart", {
                 headers: {
-                    Authorization: `Bearer ${token}`
-                }
+                    Authorization: `Bearer ${token}`,
+                },
             });
 
             const { success, cartItems } = response.data;
@@ -163,15 +215,15 @@ const StoreContextProvider = ({ children }) => {
 
     const handleAddToCart = async (productId) => {
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem("token");
 
             const response = await axios.post(
-                'http://localhost:5001/api/cart/add',
+                "http://localhost:5001/api/cart/add",
                 { productId },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
-                        'Content-Type': 'application/json',
+                        "Content-Type": "application/json",
                     },
                 }
             );
@@ -180,29 +232,29 @@ const StoreContextProvider = ({ children }) => {
 
             if (success) {
                 setCart(updatedCart);
-                showSuccessToast(message || 'Product added to cart!');
+                showSuccessToast(message || "Product added to cart!");
             }
         } catch (error) {
             console.error("Add to cart error:", error);
-            const errorMsg = error.response?.data?.message || 'Failed to add to cart.';
+            const errorMsg = error.response?.data?.message || "Failed to add to cart.";
             showErrorToast(errorMsg);
         }
     };
 
     const updateCartHandler = async (productId, change) => {
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem("token");
 
             const response = await axios.put(
-                'http://localhost:5001/api/cart',
+                "http://localhost:5001/api/cart",
                 {
                     productId,
-                    quantity: change
+                    quantity: change,
                 },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
-                        'Content-Type': 'application/json',
+                        "Content-Type": "application/json",
                     },
                 }
             );
@@ -219,15 +271,15 @@ const StoreContextProvider = ({ children }) => {
 
     const removeCartItem = async (productId) => {
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem("token");
 
             const response = await axios.post(
-                'http://localhost:5001/api/cart/remove',
+                "http://localhost:5001/api/cart/remove",
                 { productId },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
-                        'Content-Type': 'application/json',
+                        "Content-Type": "application/json",
                     },
                 }
             );
@@ -248,18 +300,21 @@ const StoreContextProvider = ({ children }) => {
     const handleLogOut = () => {
         localStorage.clear();
         setIsLoggedIn(false);
-        navigate('/login');
+        navigate("/login");
     };
 
     const fetchReviewsByProduct = async (productId) => {
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem("token");
 
-            const response = await axios.get(`http://localhost:5001/api/review/product/${productId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const response = await axios.get(
+                `http://localhost:5001/api/review/product/${productId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
 
             const reviews = response.data.reviews.map((review) => ({
                 id: review._id,
@@ -274,22 +329,21 @@ const StoreContextProvider = ({ children }) => {
         }
     };
 
-
     const addReview = async (productId, reviewText) => {
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem("token");
 
             const response = await axios.post(
                 "http://localhost:5001/api/review",
                 {
                     productId,
-                    review: reviewText
+                    review: reviewText,
                 },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json"
-                    }
+                        "Content-Type": "application/json",
+                    },
                 }
             );
 
@@ -306,18 +360,17 @@ const StoreContextProvider = ({ children }) => {
         }
     };
 
-    {/** Department */ }
+    {
+        /** Department */
+    }
     const getAllDepartments = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await axios.get(
-                `http://localhost:5001/api/department`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const token = localStorage.getItem("token");
+            const response = await axios.get(`http://localhost:5001/api/department`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             const { success, departments } = response.data;
             if (success) {
                 setDepartments(departments);
@@ -356,12 +409,16 @@ const StoreContextProvider = ({ children }) => {
 
     const updateDepartment = async (id, name) => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await axios.patch(`http://localhost:5001/api/department/${id}`, { name }, {
-                headers: {
-                    Authorization: `Bearer ${token}`
+            const token = localStorage.getItem("token");
+            const response = await axios.patch(
+                `http://localhost:5001/api/department/${id}`,
+                { name },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
                 }
-            });
+            );
             if (response.data && response.data.success) {
                 setDepartments(response.data.departments); // or whatever your setter is
                 showSuccessToast("Department Updated");
@@ -377,15 +434,12 @@ const StoreContextProvider = ({ children }) => {
 
     const deleteDepartment = async (id) => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await axios.delete(
-                `http://localhost:5001/api/department/${id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const token = localStorage.getItem("token");
+            const response = await axios.delete(`http://localhost:5001/api/department/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             if (response.data && response.data.success) {
                 setDepartments(response.data.departments); // or whatever your setter is
                 showSuccessToast("Department deleted");
@@ -399,18 +453,17 @@ const StoreContextProvider = ({ children }) => {
         }
     };
 
-    {/** Designation */ }
+    {
+        /** Designation */
+    }
     const getAllDesignations = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await axios.get(
-                `http://localhost:5001/api/designation`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const token = localStorage.getItem("token");
+            const response = await axios.get(`http://localhost:5001/api/designation`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             if (response.data && response.data.success) {
                 setDesignations(response.data.designations);
             }
@@ -421,14 +474,14 @@ const StoreContextProvider = ({ children }) => {
 
     const createDesignation = async (title) => {
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem("token");
             const response = await axios.post(
                 `http://localhost:5001/api/designation`,
                 { title },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+                        Authorization: `Bearer ${token}`,
+                    },
                 }
             );
             if (response.data && response.data.success) {
@@ -443,15 +496,12 @@ const StoreContextProvider = ({ children }) => {
 
     const deleteDesignation = async (id) => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await axios.delete(
-                `http://localhost:5001/api/designation/${id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const token = localStorage.getItem("token");
+            const response = await axios.delete(`http://localhost:5001/api/designation/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             if (response.data && response.data.success) {
                 setDesignations(response.data.designations);
                 showSuccessToast("Designation deleted");
@@ -464,14 +514,14 @@ const StoreContextProvider = ({ children }) => {
 
     const updateDesignation = async (id, title) => {
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem("token");
             const response = await axios.patch(
                 `http://localhost:5001/api/designation/${id}`,
                 { title },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+                        Authorization: `Bearer ${token}`,
+                    },
                 }
             );
             if (response.data && response.data.success) {
@@ -497,14 +547,14 @@ const StoreContextProvider = ({ children }) => {
 
     const createBrand = async (brandName) => {
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem("token");
             const response = await axios.post(
                 `http://localhost:5001/api/brand`,
                 { brandName },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+                        Authorization: `Bearer ${token}`,
+                    },
                 }
             );
             if (response.data && response.data.success) {
@@ -519,15 +569,12 @@ const StoreContextProvider = ({ children }) => {
 
     const deleteBrand = async (id) => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await axios.delete(
-                `http://localhost:5001/api/brand/${id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const token = localStorage.getItem("token");
+            const response = await axios.delete(`http://localhost:5001/api/brand/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             if (response.data && response.data.success) {
                 setBrands(response.data.brands);
                 showSuccessToast("Brand deleted");
@@ -540,14 +587,14 @@ const StoreContextProvider = ({ children }) => {
 
     const updateBrand = async (id, brandName) => {
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem("token");
             const response = await axios.patch(
                 `http://localhost:5001/api/brand/${id}`,
                 { brandName },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+                        Authorization: `Bearer ${token}`,
+                    },
                 }
             );
             if (response.data && response.data.success) {
@@ -573,14 +620,14 @@ const StoreContextProvider = ({ children }) => {
 
     const createCategory = async (name) => {
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem("token");
             const response = await axios.post(
                 `http://localhost:5001/api/category`,
                 { name },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+                        Authorization: `Bearer ${token}`,
+                    },
                 }
             );
             if (response.data && response.data.success) {
@@ -595,15 +642,12 @@ const StoreContextProvider = ({ children }) => {
 
     const deleteCategory = async (id) => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await axios.delete(
-                `http://localhost:5001/api/category/${id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const token = localStorage.getItem("token");
+            const response = await axios.delete(`http://localhost:5001/api/category/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             if (response.data && response.data.success) {
                 setCategories(response.data.categories);
                 showSuccessToast("Category deleted");
@@ -616,14 +660,14 @@ const StoreContextProvider = ({ children }) => {
 
     const updateCategory = async (id, name) => {
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem("token");
             const response = await axios.patch(
                 `http://localhost:5001/api/category/${id}`,
                 { name },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+                        Authorization: `Bearer ${token}`,
+                    },
                 }
             );
             if (response.data && response.data.success) {
@@ -715,16 +759,12 @@ const StoreContextProvider = ({ children }) => {
     const handleAddProduct = async (productData) => {
         try {
             setLoadingProducts(true);
-            const token = localStorage.getItem('token');
-            const response = await axios.post(
-                `http://localhost:5001/api/product`,
-                productData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const token = localStorage.getItem("token");
+            const response = await axios.post(`http://localhost:5001/api/product`, productData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             if (response.data && response.data.success) {
                 showSuccessToast("Product created");
                 setProducts(response.data.products);
@@ -739,7 +779,7 @@ const StoreContextProvider = ({ children }) => {
 
     const handleUpdate = async (id, updatedData) => {
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem("token");
             const response = await axios.patch(
                 `http://localhost:5001/api/product/${id}`,
                 updatedData,
@@ -763,15 +803,12 @@ const StoreContextProvider = ({ children }) => {
         try {
             console.log("Deleting product with ID:", id);
 
-            const token = localStorage.getItem('token');
-            const response = await axios.delete(
-                `http://localhost:5001/api/product/${id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const token = localStorage.getItem("token");
+            const response = await axios.delete(`http://localhost:5001/api/product/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             if (response.data && response.data.success) {
                 showSuccessToast("Product deleted");
                 setProducts(response.data.products);
@@ -784,15 +821,12 @@ const StoreContextProvider = ({ children }) => {
 
     const getAllEmployees = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await axios.get(
-                `http://localhost:5001/api/employee`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const token = localStorage.getItem("token");
+            const response = await axios.get(`http://localhost:5001/api/employee`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             const { success, employees } = response.data;
             if (success) {
                 setEmployees(employees);
@@ -808,15 +842,11 @@ const StoreContextProvider = ({ children }) => {
     const createEmployee = async (data) => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.post(
-                "http://localhost:5001/api/employee",
-                data,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const response = await axios.post("http://localhost:5001/api/employee", data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
 
             if (response.data && response.data.success) {
                 setEmployees(response.data.employees); // Assuming response returns updated list
@@ -834,14 +864,11 @@ const StoreContextProvider = ({ children }) => {
     const deleteEmployee = async (id) => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.delete(
-                `http://localhost:5001/api/employee/${id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const response = await axios.delete(`http://localhost:5001/api/employee/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
 
             if (response.data && response.data.success) {
                 setEmployees(response.data.employees);
@@ -857,15 +884,12 @@ const StoreContextProvider = ({ children }) => {
 
     const getAllUsers = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await axios.get(
-                `http://localhost:5001/api/user`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const token = localStorage.getItem("token");
+            const response = await axios.get(`http://localhost:5001/api/user`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             const { success, users } = response.data;
             if (success) {
                 setUsers(users);
@@ -876,8 +900,7 @@ const StoreContextProvider = ({ children }) => {
             console.error("Error fetching users:", error);
             showErrorToast("Something went wrong while fetching users");
         }
-    }
-
+    };
 
     return (
         <StoreContext.Provider
@@ -939,7 +962,13 @@ const StoreContextProvider = ({ children }) => {
                 users,
                 getCustomerOrders,
                 customerOrders,
-                isLoggedIn
+                isLoggedIn,
+                feedback,
+                handleFeedback,
+                setFeedback,
+                email,
+                setEmail,
+                handleSubscribe,
             }}
         >
             {children}
