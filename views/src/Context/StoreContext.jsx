@@ -3,6 +3,7 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { showErrorToast, showSuccessToast } from "../utils/toatsUtils";
+import { useLocation } from "react-router-dom";
 
 export const StoreContext = createContext(null);
 
@@ -33,24 +34,25 @@ const StoreContextProvider = ({ children }) => {
         message: "",
     });
     const [email, setEmail] = useState("");
+    const location = useLocation();
     const handleSubscribe = async () => {
-            if (!email.trim()) {
-                alert("Please enter your email address.");
-                return;
+        if (!email.trim()) {
+            alert("Please enter your email address.");
+            return;
+        }
+
+        try {
+            const response = await axios.post("http://localhost:5001/api/email/subscribe", { email });
+
+            if (response.status === 200) {
+                showSuccessToast("Thank you for subscribing!");
+                setEmail("");
             }
-    
-            try {
-                const response = await axios.post("http://localhost:5001/api/email/subscribe", { email });
-    
-                if (response.status === 200) {
-                    showSuccessToast("Thank you for subscribing!");
-                    setEmail("");
-                }
-            } catch (error) {
-                console.error("Subscription error:", error);
-                showErrorToast("Something went wrong. Please try again later.");
-            }
-        };
+        } catch (error) {
+            console.error("Subscription error:", error);
+            showErrorToast("Something went wrong. Please try again later.");
+        }
+    };
 
     const handleFeedback = async (e) => {
         e.preventDefault();
@@ -104,10 +106,27 @@ const StoreContextProvider = ({ children }) => {
         }
     };
 
+    const isPublicRoute = (path) => {
+        const publicRoutes = [
+            /^\/$/,
+            /^\/login$/,
+            /^\/signup$/,
+            /^\/blog$/,
+            /^\/shop$/,
+            /^\/contact$/,
+            /^\/product\/[^/]+$/
+        ];
+
+        return publicRoutes.some((routeRegex) => routeRegex.test(path));
+    };
+
     useEffect(() => {
         fetchAllProducts();
-        checkAuthAndSignOutIfInvalid();
-    }, []);
+
+        if (!isPublicRoute(location.pathname)) {
+            checkAuthAndSignOutIfInvalid();
+        }
+    }, [location.pathname]);
 
     const fetchProducts = async () => {
         setLoadingProducts(true);

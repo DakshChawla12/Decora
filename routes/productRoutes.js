@@ -28,7 +28,7 @@ router.post(
     upload.array('images', 5), 
     create
 );
-router.get('/:id', isAuthenticated, findOne);
+router.get('/:id', findOne);
 router.patch('/:id', isAuthenticated, isAdmin, update);
 router.delete('/:id', isAuthenticated, isAdmin, deleteProduct);
 
