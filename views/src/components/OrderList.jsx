@@ -55,7 +55,7 @@ const OrderList = () => {
                                     {order.customer?.user?.email || "N/A"}
                                 </td>
                                 <td className="py-4 px-6 font-medium text-zinc-800">
-                                    ${order.totalAmount.toFixed(2)}
+                                    ₹{order.totalAmount.toFixed(2)}
                                 </td>
                                 <td className={`py-4 px-6 font-medium ${statusColors[order.status]}`}>
                                     {order.status}

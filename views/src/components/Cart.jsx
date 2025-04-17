@@ -19,9 +19,9 @@ const Cart = ({ cartItems }) => {
   };
 
   const shippingOptions = [
-    { label: "Free shipping", value: "free", cost: 0, symbol: "$" },
-    { label: "Express shipping", value: "express", cost: 15, symbol: "$" },
-    { label: "Pick Up", value: "pickup", cost: 21, symbol: "$" },
+    { label: "Free shipping", value: "free", cost: 0, symbol: "₹" },
+    { label: "Express shipping", value: "express", cost: 15, symbol: "₹" },
+    { label: "Pick Up", value: "pickup", cost: 21, symbol: "₹" },
   ];
 
   const getShippingCost = () => {
