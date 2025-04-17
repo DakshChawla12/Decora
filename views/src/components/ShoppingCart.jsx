@@ -219,10 +219,10 @@ const ShoppingCart = ({
                   </div>
 
                   <p className="w-[15%] text-center text-lg font-medium">
-                    ${item.product.price}
+                    ₹{item.product.price}
                   </p>
                   <p className="w-[15%] text-center text-lg font-semibold">
-                    ${getSubtotal(item.product.price, item.quantity)}
+                    ₹{getSubtotal(item.product.price, item.quantity)}
                   </p>
                 </div>
               ))}
@@ -268,24 +268,24 @@ const ShoppingCart = ({
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
                 <span>Subtotal</span>
-                <span className="font-semibold">${subtotal.toFixed(2)}</span>
+                <span className="font-semibold">₹{subtotal.toFixed(2)}</span>
               </div>
               {discountPercentage > 0 && (
                 <div className="flex justify-between text-sm text-green-600">
                   <span>Discount ({discountPercentage}%)</span>
-                  <span className="font-semibold">-${discountAmount.toFixed(2)}</span>
+                  <span className="font-semibold">-₹{discountAmount.toFixed(2)}</span>
                 </div>
               )}
               <div className="flex justify-between text-sm">
                 <span>Shipping</span>
-                <span className="font-semibold">${shippingCost.toFixed(2)}</span>
+                <span className="font-semibold">₹{shippingCost.toFixed(2)}</span>
               </div>
 
               <hr className="border-t border-gray-300" />
 
               <div className="flex justify-between text-lg font-semibold">
                 <span>Total</span>
-                <span>${discountedTotal.toFixed(2)}</span>
+                <span>₹{discountedTotal.toFixed(2)}</span>
               </div>
             </div>
 

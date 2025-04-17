@@ -44,14 +44,14 @@ const SingleProduct = ({ product }) => {
   return (
     <div className="lg:pb-10">
       <div className="flex items-center px-8 lg:px-38">
-            <span className="flex items-center text-gray-500">
-              Home
-              <Right className="h-3 w-3 mx-1" />
-              Shop
-              <Right className="h-3 w-3 mx-1" />
-            </span>
-            Product
-          </div>
+        <span className="flex items-center text-gray-500">
+          Home
+          <Right className="h-3 w-3 mx-1" />
+          Shop
+          <Right className="h-3 w-3 mx-1" />
+        </span>
+        Product
+      </div>
       <div className="w-full h-auto p-8 flex flex-col gap-y-6 md:gap-y-0 md:flex-row md:justify-between lg:px-38 ">
         {/* Left Side - Images */}
         <div className="flex flex-col md:h-[28rem] lg:h-full lg:w-[35rem]">
@@ -81,9 +81,8 @@ const SingleProduct = ({ product }) => {
                   <div
                     key={index}
                     onClick={() => setActiveImageIndex(index)}
-                    className={`relative cursor-pointer overflow-hidden flex-shrink-0 ${
-                      index === activeImageIndex ? "brightness-80" : ""
-                    }`}
+                    className={`relative cursor-pointer overflow-hidden flex-shrink-0 ${index === activeImageIndex ? "brightness-80" : ""
+                      }`}
                   >
                     <img
                       src={img}
@@ -106,9 +105,9 @@ const SingleProduct = ({ product }) => {
           <p className="text-[#6C7275]">{product.description}</p>
 
           <div className="w-full flex gap-x-4 items-center">
-            <span className="font-bold text-3xl">${product.price}</span>
+            <span className="font-bold text-3xl">₹{product.price}</span>
             <span className="font-bold text-2xl text-[#6C7275] line-through">
-              ${(product.price * 1.3).toFixed(0)}
+              ₹{(product.price * 1.3).toFixed(0)}
             </span>
           </div>
 

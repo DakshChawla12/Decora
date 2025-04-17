@@ -53,10 +53,10 @@ const ProductCard = ({ product }) => {
 
         <div className="flex items-center gap-x-2">
           <span className="text-[#343839] font-bold text-base">
-            ${product.price}
+            ₹{product.price}
           </span>
           <span className="text-gray-500 font-semibold line-through text-sm">
-            ${Math.round(product.price * 1.3)}
+            ₹{Math.round(product.price * 1.3)}
           </span>
         </div>
       </div>

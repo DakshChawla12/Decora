@@ -40,7 +40,7 @@ const Orders = () => {
                                 <span>{order.id}</span>
                                 <span>{formattedDate}</span>
                                 <span>{order.status}</span>
-                                <span>${order.totalAmount.toFixed(2)}</span>
+                                <span>₹{order.totalAmount.toFixed(2)}</span>
                             </div>
                         );
                     })}

@@ -58,7 +58,7 @@ const ProductList = () => {
                                     )}
                                 </td>
                                 <td className="py-3 px-4">{product.name}</td>
-                                <td className="py-3 px-4">${product.price}</td>
+                                <td className="py-3 px-4">₹{product.price}</td>
                                 <td className="py-3 px-4">{product.stock}</td>
                                 <td className="py-3 px-4 space-x-2">
                                     <button
