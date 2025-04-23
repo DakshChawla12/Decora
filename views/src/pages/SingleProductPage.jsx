@@ -10,18 +10,19 @@ const SingleProductPage = () => {
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
     useEffect(() => {
         const fetchProduct = async () => {
             try {
                 const token = localStorage.getItem('token');
                 const res = await axios.get(
-                    `http://localhost:5001/api/product/${id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
+                    `${BACKEND_URL}/api/product/${id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
                 setProduct(res.data.product); // Adjust based on API structure
                 setLoading(false);
             } catch (err) {
@@ -31,7 +32,7 @@ const SingleProductPage = () => {
         };
 
         fetchProduct();
-    }, [id]);
+    }, [id, BACKEND_URL]);
 
     return (
         <div className='h-full w-full'>

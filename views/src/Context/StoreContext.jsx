@@ -8,6 +8,9 @@ import { useLocation } from "react-router-dom";
 export const StoreContext = createContext(null);
 
 const StoreContextProvider = ({ children }) => {
+
+    const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
     const [products, setProducts] = useState([]);
     const [loadingProducts, setLoadingProducts] = useState(false);
     const [productsError, setProductsError] = useState(null);
@@ -42,7 +45,7 @@ const StoreContextProvider = ({ children }) => {
         }
 
         try {
-            const response = await axios.post("http://localhost:5001/api/email/subscribe", { email });
+            const response = await axios.post(`${BACKEND_URL}/api/email/subscribe`, { email });
 
             if (response.status === 200) {
                 showSuccessToast("Thank you for subscribing!");
@@ -66,7 +69,7 @@ const StoreContextProvider = ({ children }) => {
         try {
             const token = localStorage.getItem("token");
 
-            const response = await axios.post("http://localhost:5001/api/email/sendfeedback", feedback, {
+            const response = await axios.post(`${BACKEND_URL}/api/email/sendfeedback`, feedback, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -146,7 +149,7 @@ const StoreContextProvider = ({ children }) => {
                 }
             }
 
-            const res = await axios.post("http://localhost:5001/api/product/filter", {
+            const res = await axios.post(`${BACKEND_URL}/api/product/filter`, {
                 minPrice,
                 maxPrice,
             });
@@ -164,7 +167,7 @@ const StoreContextProvider = ({ children }) => {
         setProductsError(null);
 
         try {
-            const res = await axios.get("http://localhost:5001/api/product");
+            const res = await axios.get(`${BACKEND_URL}/api/product`);
             setProducts(res.data.products);
         } catch (err) {
             setProductsError("Failed to fetch all products.");
@@ -175,7 +178,7 @@ const StoreContextProvider = ({ children }) => {
 
     const loginUser = async (email, password) => {
         try {
-            const response = await axios.post("http://localhost:5001/api/user/login", {
+            const response = await axios.post(`${BACKEND_URL}/api/user/login`, {
                 email,
                 password,
             });
@@ -198,7 +201,7 @@ const StoreContextProvider = ({ children }) => {
 
     const signupUser = async (formData) => {
         try {
-            const response = await axios.post("http://localhost:5001/api/user/register", formData);
+            const response = await axios.post(`${BACKEND_URL}/api/user/register`, formData);
             const { success, message } = response.data;
 
             if (success) {
@@ -217,7 +220,7 @@ const StoreContextProvider = ({ children }) => {
         try {
             const token = localStorage.getItem("token");
 
-            const response = await axios.get("http://localhost:5001/api/cart", {
+            const response = await axios.get(`${BACKEND_URL}/api/cart`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -237,7 +240,7 @@ const StoreContextProvider = ({ children }) => {
             const token = localStorage.getItem("token");
 
             const response = await axios.post(
-                "http://localhost:5001/api/cart/add",
+                `${BACKEND_URL}/api/cart/add`,
                 { productId },
                 {
                     headers: {
@@ -265,7 +268,7 @@ const StoreContextProvider = ({ children }) => {
             const token = localStorage.getItem("token");
 
             const response = await axios.put(
-                "http://localhost:5001/api/cart",
+                `${BACKEND_URL}/api/cart`,
                 {
                     productId,
                     quantity: change,
@@ -293,7 +296,7 @@ const StoreContextProvider = ({ children }) => {
             const token = localStorage.getItem("token");
 
             const response = await axios.post(
-                "http://localhost:5001/api/cart/remove",
+                `${BACKEND_URL}/api/cart/remove`,
                 { productId },
                 {
                     headers: {
@@ -327,7 +330,7 @@ const StoreContextProvider = ({ children }) => {
             const token = localStorage.getItem("token");
 
             const response = await axios.get(
-                `http://localhost:5001/api/review/product/${productId}`,
+                `${BACKEND_URL}/api/review/product/${productId}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -353,7 +356,7 @@ const StoreContextProvider = ({ children }) => {
             const token = localStorage.getItem("token");
 
             const response = await axios.post(
-                "http://localhost:5001/api/review",
+                `${BACKEND_URL}/api/review`,
                 {
                     productId,
                     review: reviewText,
@@ -370,7 +373,7 @@ const StoreContextProvider = ({ children }) => {
 
             if (success) {
                 showSuccessToast(message || "Review added!");
-                fetchReviewsByProduct(productId); // ✅ Refresh reviews after posting
+                fetchReviewsByProduct(productId);
             }
         } catch (error) {
             console.error("Add review error:", error);
@@ -385,7 +388,7 @@ const StoreContextProvider = ({ children }) => {
     const getAllDepartments = async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.get(`http://localhost:5001/api/department`, {
+            const response = await axios.get(`${BACKEND_URL}/api/department`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -403,7 +406,7 @@ const StoreContextProvider = ({ children }) => {
         try {
             const token = localStorage.getItem("token");
             const response = await axios.post(
-                "http://localhost:5001/api/department",
+                `${BACKEND_URL}/api/department`,
                 { name },
                 {
                     headers: {
@@ -412,9 +415,8 @@ const StoreContextProvider = ({ children }) => {
                 }
             );
 
-            // ✅ Make sure response.data exists
             if (response.data && response.data.success) {
-                setDepartments(response.data.departments); // or whatever your setter is
+                setDepartments(response.data.departments);
                 showSuccessToast("Department Created");
             } else {
                 console.error("Failed to create department:", response.data);
@@ -430,7 +432,7 @@ const StoreContextProvider = ({ children }) => {
         try {
             const token = localStorage.getItem("token");
             const response = await axios.patch(
-                `http://localhost:5001/api/department/${id}`,
+                `${BACKEND_URL}/api/department/${id}`,
                 { name },
                 {
                     headers: {
@@ -439,7 +441,7 @@ const StoreContextProvider = ({ children }) => {
                 }
             );
             if (response.data && response.data.success) {
-                setDepartments(response.data.departments); // or whatever your setter is
+                setDepartments(response.data.departments);
                 showSuccessToast("Department Updated");
             } else {
                 console.error("Failed to update department:", response.data);
@@ -454,13 +456,13 @@ const StoreContextProvider = ({ children }) => {
     const deleteDepartment = async (id) => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.delete(`http://localhost:5001/api/department/${id}`, {
+            const response = await axios.delete(`${BACKEND_URL}/api/department/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
             if (response.data && response.data.success) {
-                setDepartments(response.data.departments); // or whatever your setter is
+                setDepartments(response.data.departments);
                 showSuccessToast("Department deleted");
             } else {
                 console.error("Failed to deleted department:", response.data);
@@ -478,7 +480,7 @@ const StoreContextProvider = ({ children }) => {
     const getAllDesignations = async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.get(`http://localhost:5001/api/designation`, {
+            const response = await axios.get(`${BACKEND_URL}/api/designation`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -495,7 +497,7 @@ const StoreContextProvider = ({ children }) => {
         try {
             const token = localStorage.getItem("token");
             const response = await axios.post(
-                `http://localhost:5001/api/designation`,
+                `${BACKEND_URL}/api/designation`,
                 { title },
                 {
                     headers: {
@@ -516,7 +518,7 @@ const StoreContextProvider = ({ children }) => {
     const deleteDesignation = async (id) => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.delete(`http://localhost:5001/api/designation/${id}`, {
+            const response = await axios.delete(`${BACKEND_URL}/api/designation/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -535,7 +537,7 @@ const StoreContextProvider = ({ children }) => {
         try {
             const token = localStorage.getItem("token");
             const response = await axios.patch(
-                `http://localhost:5001/api/designation/${id}`,
+                `${BACKEND_URL}/api/designation/${id}`,
                 { title },
                 {
                     headers: {
@@ -555,7 +557,7 @@ const StoreContextProvider = ({ children }) => {
 
     const getAllBrands = async () => {
         try {
-            const response = await axios.get(`http://localhost:5001/api/brand`);
+            const response = await axios.get(`${BACKEND_URL}/api/brand`);
             if (response.data && response.data.success) {
                 setBrands(response.data.brands);
             }
@@ -568,7 +570,7 @@ const StoreContextProvider = ({ children }) => {
         try {
             const token = localStorage.getItem("token");
             const response = await axios.post(
-                `http://localhost:5001/api/brand`,
+                `${BACKEND_URL}/api/brand`,
                 { brandName },
                 {
                     headers: {
@@ -589,7 +591,7 @@ const StoreContextProvider = ({ children }) => {
     const deleteBrand = async (id) => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.delete(`http://localhost:5001/api/brand/${id}`, {
+            const response = await axios.delete(`${BACKEND_URL}/api/brand/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -608,7 +610,7 @@ const StoreContextProvider = ({ children }) => {
         try {
             const token = localStorage.getItem("token");
             const response = await axios.patch(
-                `http://localhost:5001/api/brand/${id}`,
+                `${BACKEND_URL}/api/brand/${id}`,
                 { brandName },
                 {
                     headers: {
@@ -628,7 +630,7 @@ const StoreContextProvider = ({ children }) => {
 
     const getAllCategories = async () => {
         try {
-            const response = await axios.get(`http://localhost:5001/api/category`);
+            const response = await axios.get(`${BACKEND_URL}/api/category`);
             if (response.data && response.data.success) {
                 setCategories(response.data.categories);
             }
@@ -641,7 +643,7 @@ const StoreContextProvider = ({ children }) => {
         try {
             const token = localStorage.getItem("token");
             const response = await axios.post(
-                `http://localhost:5001/api/category`,
+                `${BACKEND_URL}/api/category`,
                 { name },
                 {
                     headers: {
@@ -662,7 +664,7 @@ const StoreContextProvider = ({ children }) => {
     const deleteCategory = async (id) => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.delete(`http://localhost:5001/api/category/${id}`, {
+            const response = await axios.delete(`${BACKEND_URL}/api/category/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -681,7 +683,7 @@ const StoreContextProvider = ({ children }) => {
         try {
             const token = localStorage.getItem("token");
             const response = await axios.patch(
-                `http://localhost:5001/api/category/${id}`,
+                `${BACKEND_URL}/api/category/${id}`,
                 { name },
                 {
                     headers: {
@@ -703,7 +705,7 @@ const StoreContextProvider = ({ children }) => {
     const getAllOrders = async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.get(`http://localhost:5001/api/order/admin/all`, {
+            const response = await axios.get(`${BACKEND_URL}/api/order/admin/all`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -720,7 +722,7 @@ const StoreContextProvider = ({ children }) => {
         try {
             const token = localStorage.getItem("token");
             const response = await axios.post(
-                `http://localhost:5001/api/order`,
+                `${BACKEND_URL}/api/order`,
                 {},
                 {
                     headers: {
@@ -740,7 +742,7 @@ const StoreContextProvider = ({ children }) => {
         try {
             const token = localStorage.getItem("token");
             const response = await axios.put(
-                `http://localhost:5001/api/order/${id}`,
+                `${BACKEND_URL}/api/order/${id}`,
                 { status },
                 {
                     headers: {
@@ -761,7 +763,7 @@ const StoreContextProvider = ({ children }) => {
     const getCustomerOrders = async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.get(`http://localhost:5001/api/order`, {
+            const response = await axios.get(`${BACKEND_URL}/api/order`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -779,7 +781,7 @@ const StoreContextProvider = ({ children }) => {
         try {
             setLoadingProducts(true);
             const token = localStorage.getItem("token");
-            const response = await axios.post(`http://localhost:5001/api/product`, productData, {
+            const response = await axios.post(`${BACKEND_URL}/api/product`, productData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -800,7 +802,7 @@ const StoreContextProvider = ({ children }) => {
         try {
             const token = localStorage.getItem("token");
             const response = await axios.patch(
-                `http://localhost:5001/api/product/${id}`,
+                `${BACKEND_URL}/api/product/${id}`,
                 updatedData,
                 {
                     headers: {
@@ -823,7 +825,7 @@ const StoreContextProvider = ({ children }) => {
             console.log("Deleting product with ID:", id);
 
             const token = localStorage.getItem("token");
-            const response = await axios.delete(`http://localhost:5001/api/product/${id}`, {
+            const response = await axios.delete(`${BACKEND_URL}/api/product/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -841,7 +843,7 @@ const StoreContextProvider = ({ children }) => {
     const getAllEmployees = async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.get(`http://localhost:5001/api/employee`, {
+            const response = await axios.get(`${BACKEND_URL}/api/employee`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -861,14 +863,14 @@ const StoreContextProvider = ({ children }) => {
     const createEmployee = async (data) => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.post("http://localhost:5001/api/employee", data, {
+            const response = await axios.post(`${BACKEND_URL}/api/employee`, data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
 
             if (response.data && response.data.success) {
-                setEmployees(response.data.employees); // Assuming response returns updated list
+                setEmployees(response.data.employees);
                 showSuccessToast("Employee created");
             } else {
                 console.error("Failed to create employee:", response.data);
@@ -883,7 +885,7 @@ const StoreContextProvider = ({ children }) => {
     const deleteEmployee = async (id) => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.delete(`http://localhost:5001/api/employee/${id}`, {
+            const response = await axios.delete(`${BACKEND_URL}/api/employee/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -904,7 +906,7 @@ const StoreContextProvider = ({ children }) => {
     const getAllUsers = async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.get(`http://localhost:5001/api/user`, {
+            const response = await axios.get(`${BACKEND_URL}/api/user`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

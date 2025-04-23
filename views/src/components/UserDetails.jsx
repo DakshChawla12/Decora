@@ -25,9 +25,11 @@ const UserDetails = () => {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+    const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
     const updateUserDetails = async (data) => {
         try {
-            const response = await axios.patch("http://localhost:5001/api/user/update", data, {
+            const response = await axios.patch(`${BACKEND_URL}/api/user/update`, data, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
@@ -41,7 +43,7 @@ const UserDetails = () => {
     const updatePassword = async (data) => {
         try {
             const response = await axios.patch(
-                "http://localhost:5001/api/user/update-password",
+                `${BACKEND_URL}/api/user/update-password`,
                 data,
                 {
                     headers: {

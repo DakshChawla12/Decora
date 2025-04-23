@@ -38,6 +38,8 @@ const ShoppingCart = ({
   const stripe = useStripe();
   const elements = useElements();
 
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
   const [validateCoupon, { loading }] = useLazyQuery(VALIDATE_COUPON, {
     onCompleted: (data) => {
       if (data.validateCoupon) {
@@ -92,7 +94,7 @@ const ShoppingCart = ({
     try {
       // Step 1: Create Payment Intent
       const { data } = await axios.post(
-        'http://localhost:5001/api/order',
+        `${BACKEND_URL}/api/order`,
         { totalAmount },
         {
           headers: {
@@ -124,7 +126,7 @@ const ShoppingCart = ({
       if (paymentIntent.status === 'succeeded') {
         // Step 3: Confirm order creation
         const confirmResponse = await axios.post(
-          'http://localhost:5001/api/order/confirm',
+          `${BACKEND_URL}/api/order/confirm`,
           {
             paymentIntentId: paymentIntent.id,
             totalAmount,

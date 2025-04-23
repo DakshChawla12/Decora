@@ -14,8 +14,10 @@ import {
     ApolloProvider,
 } from "@apollo/client";
 
+ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
 const client = new ApolloClient({
-    uri: "http://localhost:5001/graphql", // Make sure this matches your server's GraphQL endpoint
+    uri: `${BACKEND_URL}/graphql`, // Make sure this matches your server's GraphQL endpoint
     cache: new InMemoryCache(),
 });
 
