@@ -15,6 +15,7 @@ import SingleProductPage from './pages/SingleProductPage';
 import NotFound from './components/NotFound';
 import OrderConfirmation from './components/OrderConfirmation';
 import OrderFailure from './components/OrderFailure';
+import VerifyOTP from './pages/VerifyOTP'
 
 const App = () => {
     return (
@@ -22,6 +23,7 @@ const App = () => {
             <Route path="/" element={<LandingPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/verify-otp" element={<VerifyOTP />} />
             <Route path="/shop" element={<ShopPage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/contact" element={<ContactUsPage />} />
@@ -55,10 +57,9 @@ const App = () => {
                 }
             />
             <Route path="/unauthorized" element={<UnauthorisedPage />} />
-            <Route path='/orderSuccess' element={<OrderConfirmation/>}/>
-            <Route path='/orderFailure' element={<OrderFailure/>}/>
-            <Route path='*' element={<NotFound/>}/>
-
+            <Route path="/orderSuccess" element={<OrderConfirmation />} />
+            <Route path="/orderFailure" element={<OrderFailure />} />
+            <Route path="*" element={<NotFound />} />
         </Routes>
     );
 };
