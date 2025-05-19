@@ -49,6 +49,8 @@ const validatePasswordUpdate = [
 // Routes
 router.post("/register", validateUser, userController.createUser);
 router.post("/login", validateUser, userController.login);
+router.post("/verify-otp", userController.verifyOTP);
+
 router.post("/logout", isAuthenticated, userController.logout);
 
 router.get("/", isAuthenticated, isAdmin, userController.getUsers);

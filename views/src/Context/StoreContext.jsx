@@ -198,22 +198,19 @@ const StoreContextProvider = ({ children }) => {
                 password,
             });
 
-            const { success, message, user, token } = response.data;
+            const { success, message, user } = response.data;
 
             if (success) {
                 showSuccessToast(message);
-                setUser(user || { email });
-                localStorage.setItem("token", token);
-                localStorage.setItem("name", user.name || "Username");
-                localStorage.setItem("email", user.email || "abc@gmail.com");
-                navigate("/");
-                setIsLoggedIn(true);
+                localStorage.setItem("userId", user.id);
+                navigate("/verify-otp");
             }
         } catch (error) {
             showErrorToast(error.response?.data?.message || "Login failed.");
         }
     };
 
+    
     const signupUser = async (formData) => {
         try {
             const response = await axios.post(`${BACKEND_URL}/api/user/register`, formData);
