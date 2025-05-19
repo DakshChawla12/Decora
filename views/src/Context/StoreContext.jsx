@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { showErrorToast, showSuccessToast } from "../utils/toatsUtils";
 import { useLocation } from "react-router-dom";
+import { useMemo } from "react";
 
 export const StoreContext = createContext(null);
 
@@ -37,7 +38,15 @@ const StoreContextProvider = ({ children }) => {
         message: "",
     });
     const [email, setEmail] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
     const location = useLocation();
+
+    const filteredProducts = useMemo(() => {
+        return products.filter(product =>
+            product.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    }, [products, searchTerm]);
+
     const handleSubscribe = async () => {
         if (!email.trim()) {
             alert("Please enter your email address.");
@@ -125,7 +134,7 @@ const StoreContextProvider = ({ children }) => {
 
     useEffect(() => {
         fetchAllProducts();
-
+        getAllCategories();
         if (!isPublicRoute(location.pathname)) {
             checkAuthAndSignOutIfInvalid();
         }
@@ -149,13 +158,19 @@ const StoreContextProvider = ({ children }) => {
                 }
             }
 
-            const res = await axios.post(`${BACKEND_URL}/api/product/filter`, {
+            const requestBody = {
                 minPrice,
                 maxPrice,
-            });
+                category: filterCategory !== "All Categories" ? filterCategory : null,
+            };
+
+            console.log("Request body being sent:", requestBody);
+
+            const res = await axios.post(`${BACKEND_URL}/api/product/filter`, requestBody);
 
             setProducts(res.data.products);
         } catch (err) {
+            console.log("Error in fetchProducts:", err);
             setProductsError("Failed to fetch products.");
         } finally {
             setLoadingProducts(false);
@@ -990,6 +1005,8 @@ const StoreContextProvider = ({ children }) => {
                 email,
                 setEmail,
                 handleSubscribe,
+                searchTerm,
+                setSearchTerm,
             }}
         >
             {children}
