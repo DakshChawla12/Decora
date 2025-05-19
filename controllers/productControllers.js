@@ -130,7 +130,8 @@ exports.deleteProduct = async (req, res) => {
 // Filter products by category, brand, and/or price
 exports.filter = async (req, res) => {
     try {
-        const { minPrice, maxPrice } = req.body;
+        const { minPrice, maxPrice, category } = req.body;
+        console.log(req.body);
 
         const whereClause = {};
 
@@ -149,6 +150,11 @@ exports.filter = async (req, res) => {
             };
         }
 
+        // Add category filter
+        if (category && category !== "All Categories") {
+            whereClause['$category.name$'] = category;
+        }
+
         const products = await Product.findAll({
             where: whereClause,
             include: [
@@ -163,14 +169,10 @@ exports.filter = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error fetching products by price:", error);
+        console.error("Error fetching products by price and category:", error);
         res.status(500).json({
             success: false,
             error: 'Internal Server Error',
         });
     }
 };
-
-
-
-
