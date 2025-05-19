@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
+import { StoreContext } from '../Context/StoreContext'
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -6,6 +7,9 @@ import { useNavigate } from "react-router-dom";
 const BACKEND_URL = "http://localhost:5001";
 
 const VerifyOtpForm = () => {
+
+    const { setIsOtpPending } = useContext(StoreContext);
+
     const inputRefs = useRef([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -77,9 +81,10 @@ const VerifyOtpForm = () => {
                 otp,
             });
 
-            const { user,token } = response.data;
+            const { user, token } = response.data;
             if (response.data.success) {
                 setSuccess("OTP verified successfully!");
+                setIsOtpPending(false);
                 localStorage.setItem("token", token);
                 localStorage.setItem("name", user.name || "Username");
                 localStorage.setItem("email", user.email || "abc@gmail.com");
