@@ -40,6 +40,8 @@ const StoreContextProvider = ({ children }) => {
     const [email, setEmail] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
     const location = useLocation();
+    const [isOtpPending, setIsOtpPending] = useState(false);
+
 
     const filteredProducts = useMemo(() => {
         return products.filter(product =>
@@ -112,11 +114,25 @@ const StoreContextProvider = ({ children }) => {
 
     const checkAuthAndSignOutIfInvalid = () => {
         const token = localStorage.getItem("token");
-        if (!token || !isTokenValid(token)) {
+        const currentPath = location.pathname;
+
+        // If accessing `/verify-otp`
+        if (currentPath === "/verify-otp") {
+            // Allow access if OTP is pending, otherwise redirect to login
+            if (!isOtpPending) {
+                handleNavigate("/login");
+            }
+            return;
+        }
+
+        // If accessing other private routes
+        if (!isPublicRoute(currentPath) && (!token || !isTokenValid(token))) {
+            setIsOtpPending(false);
             localStorage.clear();
             handleNavigate("/login");
         }
     };
+
 
     const isPublicRoute = (path) => {
         const publicRoutes = [
@@ -126,11 +142,12 @@ const StoreContextProvider = ({ children }) => {
             /^\/blog$/,
             /^\/shop$/,
             /^\/contact$/,
-            /^\/product\/[^/]+$/
+            /^\/product\/[^/]+$/,
         ];
 
         return publicRoutes.some((routeRegex) => routeRegex.test(path));
     };
+
 
     useEffect(() => {
         fetchAllProducts();
@@ -198,19 +215,22 @@ const StoreContextProvider = ({ children }) => {
                 password,
             });
 
-            const { success, message, user } = response.data;
+            const { success, message, userId } = response.data;
 
             if (success) {
                 showSuccessToast(message);
-                localStorage.setItem("userId", user.id);
-                navigate("/verify-otp");
+                localStorage.setItem("userId", userId);
+                setIsOtpPending(true);
+                setTimeout(() => {
+                    navigate("/verify-otp");
+                }, 1000);
             }
         } catch (error) {
             showErrorToast(error.response?.data?.message || "Login failed.");
         }
     };
 
-    
+
     const signupUser = async (formData) => {
         try {
             const response = await axios.post(`${BACKEND_URL}/api/user/register`, formData);
@@ -1004,6 +1024,7 @@ const StoreContextProvider = ({ children }) => {
                 handleSubscribe,
                 searchTerm,
                 setSearchTerm,
+                setIsOtpPending
             }}
         >
             {children}
